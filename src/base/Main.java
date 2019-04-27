@@ -1,5 +1,6 @@
 package base;
 
+import controlP5.ControlP5;
 import processing.core.PApplet;
 import simulation.RoomPlan;
 import simulation.Simulation;
@@ -37,6 +38,22 @@ public class Main extends PApplet {
         frontFrame = new FrontFrame(WIDTH / 2, HEIGHT / 2, 0, 0, simulation, this);
         topFrame = new TopFrame(WIDTH / 2, HEIGHT / 2, 0, HEIGHT / 2, simulation, this);
         sideFrame = new SideFrame(WIDTH / 2, HEIGHT / 2, WIDTH / 2, 0, simulation, this);
+
+    }
+
+    @Override
+    public void setup() {
+        ControlP5 cp5 = new ControlP5(this);
+
+        cp5.addSlider("testSlider")
+                .setPosition(WIDTH / 2 + 10, HEIGHT / 2 + 10)
+                .setWidth(20)
+                .setHeight(200)
+                .setRange(0, 255);
+    }
+
+    public void testSlider(int val) {
+        System.out.println("test: " + val);
     }
 
     @Override
