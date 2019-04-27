@@ -27,7 +27,9 @@ public class SideFrame extends Frame {
             int x = currentDepth;
             for (int y = 0; y < nRows; y++) {
                 for (int z = 0; z < nPages; z++) {
-                    plot[y][z] = temp2color( simulation.getCell(z, y, x).getValue(), min, max );
+                    plot[y][z] = plotTemperature ?
+                            temp2color(simulation.getCell(z, y, x).getValue(), min, max) :
+                            simulation.getCell(z, y, x).getTypeColor();
                 }
             }
 

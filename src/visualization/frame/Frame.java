@@ -36,8 +36,6 @@ public abstract class Frame {
         this.nCols = simulation.getWidth();
     }
 
-    public abstract void moveIn();
-
     public abstract void draw();
 
     public int getCurrentDepth() {
@@ -48,7 +46,9 @@ public abstract class Frame {
         this.currentDepth = currentDepth;
     }
 
-    public void moveOut(){
+    public abstract void moveIn();
+
+    public void moveOut() {
         currentDepth = currentDepth - 1 < 0 ? 0 : currentDepth - 1;
     }
 

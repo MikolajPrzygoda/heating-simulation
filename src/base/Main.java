@@ -12,13 +12,12 @@ import visualization.frame.TopFrame;
 public class Main extends PApplet {
 
     public static void main(String[] args) {
-        String[] processingArgs = {"-- Processing --"};
         Main myMain = new Main();
-        PApplet.runSketch(processingArgs, myMain);
+        PApplet.runSketch(new String[]{"-- Processing --"}, myMain);
     }
 
-    private static final int WIDTH  = 1600;
-    private static final int HEIGHT = 900;
+    private static final int WIDTH = 1200;
+    private static final int HEIGHT = 700;
 
     private Simulation simulation;
     private Frame topFrame;
@@ -29,9 +28,9 @@ public class Main extends PApplet {
     public void settings() {
         size(WIDTH, HEIGHT);
 //        fullScreen();
-        noSmooth(); //for some reason helps with unwanted grey cell borders
+        noSmooth(); //Disable anti-aliasing to prevent cells from having a faint grey border around them.
 
-        simulation = new Simulation( new RoomPlan.Factory().build() );
+        simulation = new Simulation(new RoomPlan.Factory().build());
 
         // Create three frames in three quarters of the window. each showing a room cross-section
         // from a different direction.
@@ -54,7 +53,7 @@ public class Main extends PApplet {
 
     @Override
     public void keyPressed() {
-        switch (key){
+        switch (key) {
             case 'q':
                 topFrame.moveIn();
                 break;

@@ -12,4 +12,6 @@ public abstract class Cell {
         this.value = value;
     }
 
+    public abstract int getTypeColor();
+
 }

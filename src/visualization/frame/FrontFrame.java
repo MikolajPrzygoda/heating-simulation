@@ -1,6 +1,7 @@
 package visualization.frame;
 
 import base.Main;
+import processing.core.PConstants;
 import simulation.Simulation;
 
 public class FrontFrame extends Frame {
@@ -27,7 +28,9 @@ public class FrontFrame extends Frame {
             int z = currentDepth;
             for (int y = 0; y < nRows; y++) {
                 for (int x = 0; x < nCols; x++) {
-                    plot[y][x] = temp2color( simulation.getCell(z, y, x).getValue(), min, max );
+                    plot[y][x] = plotTemperature ?
+                            temp2color(simulation.getCell(z, y, x).getValue(), min, max) :
+                            simulation.getCell(z, y, x).getTypeColor();
                 }
             }
 
@@ -37,9 +40,9 @@ public class FrontFrame extends Frame {
                     main.rect(x * plotPixelWidth, y * plotPixelHeight, plotPixelWidth, plotPixelHeight);
                 }
             }
-            main.stroke(255);
             main.fill(0);
-            main.text("Front", this.width/2, 12);
+            main.textAlign(PConstants.CENTER);
+            main.text("Front", this.width / 2, 12);
 
             main.popMatrix();
             main.popStyle();
@@ -49,6 +52,6 @@ public class FrontFrame extends Frame {
     @Override
     public void moveIn() {
         this.currentDepth++;
-        currentDepth = currentDepth == nPages ? nPages-1 : currentDepth;
+        currentDepth = currentDepth == nPages ? nPages - 1 : currentDepth;
     }
 }
