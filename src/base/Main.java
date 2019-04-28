@@ -29,7 +29,9 @@ public class Main extends PApplet {
     public void settings() {
         size(WIDTH, HEIGHT);
 //        fullScreen();
-        noSmooth(); //Disable anti-aliasing to prevent cells from having a faint grey border around them.
+
+        //Disable anti-aliasing to prevent cells from having a faint grey border around them and improve performance.
+        noSmooth();
 
         simulation = new Simulation(new RoomPlan.Factory().build());
 
@@ -97,6 +99,12 @@ public class Main extends PApplet {
                 topFrame.changeMode();
                 sideFrame.changeMode();
                 break;
+            case 'g':
+                frontFrame.changeGrid();
+                topFrame.changeGrid();
+                sideFrame.changeGrid();
+                break;
+
         }
     }
 }

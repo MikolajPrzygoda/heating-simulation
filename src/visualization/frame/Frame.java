@@ -2,29 +2,33 @@ package visualization.frame;
 
 import base.Main;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import simulation.Simulation;
 
 public abstract class Frame {
 
-    protected int width;
-    protected int height;
-    protected int posX, posY;
+    protected Main main;
     protected Simulation simulation;
-    protected int currentDepth = 0;
 
-    protected int nPages;
-    protected int nRows;
-    protected int nCols;
+    protected int width, height;
+    protected int posX, posY;
+    protected int currentDepth, maxDepth;
+
+    protected int nPages, nRows, nCols;
 
     protected String title = "";
-    protected int padding = 16;
+    protected int textHeight = 12;
+    protected int padding = 24;
 
-    protected float plotPixelWidth;
-    protected float plotPixelHeight;
+    protected float plotPixelWidth, plotPixelHeight;
     protected int[][] plot;
     protected boolean plotTemperature = true;
+    private boolean plotGrid = false;
 
-    protected Main main;
+    protected int depthIndicatorWidth = padding / 4;
+    protected int depthIndicatorKnobWidth = depthIndicatorWidth * 2;
+    protected int depthIndicatorKnobHeight = 6;
+
 
     public Frame(int width, int height, int posX, int posY, Simulation simulation, Main main) {
         this.width = width;
@@ -41,21 +45,51 @@ public abstract class Frame {
 
     protected abstract void loadPlot();
 
-    public void drawPlot() {
+    protected void drawPlot() {
         loadPlot();
 
         main.translate(padding, padding);
-        main.noStroke();
+
+        if (plotGrid) { //Kinda expensive so it's off by default :c
+            main.stroke(140, 50);
+            main.strokeWeight(1);
+        } else {
+            main.noStroke();
+        }
         for (int y = 0; y < plot.length; y++) {
             for (int x = 0; x < plot[0].length; x++) {
                 main.fill(plot[y][x]);
                 main.rect(x * plotPixelWidth, y * plotPixelHeight, plotPixelWidth, plotPixelHeight);
             }
         }
+
         main.translate(-padding, -padding);
     }
 
-    public abstract void draw();
+    protected abstract void drawDepthIndicator();
+
+    public void draw() {
+        main.pushMatrix();
+        main.translate(posX, posY);
+
+        //Border
+        drawBorder();
+
+        //Plot
+        drawPlot();
+
+        //Title
+        main.fill(255);
+        main.textAlign(PConstants.CENTER);
+        main.text(title, width / 2f, textHeight);
+
+        //Depth Indicator
+        drawDepthIndicator();
+
+        main.popMatrix();
+    }
+
+    protected abstract void drawBorder();
 
     public int getCurrentDepth() {
         return currentDepth;
@@ -65,7 +99,10 @@ public abstract class Frame {
         this.currentDepth = currentDepth;
     }
 
-    public abstract void moveIn();
+    public void moveIn() {
+        this.currentDepth++;
+        currentDepth = currentDepth == maxDepth ? maxDepth - 1 : currentDepth;
+    }
 
     public void moveOut() {
         currentDepth = currentDepth - 1 < 0 ? 0 : currentDepth - 1;
@@ -79,6 +116,10 @@ public abstract class Frame {
 
     public void changeMode() {
         this.plotTemperature = !this.plotTemperature;
+    }
+
+    public void changeGrid() {
+        this.plotGrid = !this.plotGrid;
     }
 
     public void setPadding(int padding) {

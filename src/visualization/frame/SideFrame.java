@@ -1,6 +1,7 @@
 package visualization.frame;
 
 import base.Main;
+import processing.core.PApplet;
 import processing.core.PConstants;
 import simulation.Simulation;
 
@@ -13,6 +14,7 @@ public class SideFrame extends Frame {
         this.plotPixelWidth = (width - 2 * padding) / (float) nPages;
         this.plot = new int[nRows][nPages];
         this.title = "Side";
+        this.maxDepth = nCols;
     }
 
     @Override
@@ -31,29 +33,30 @@ public class SideFrame extends Frame {
     }
 
     @Override
-    public void draw() {
-        main.pushMatrix();
-        main.translate(posX, posY);
-
-        //Border
+    public void drawBorder() {
         main.strokeWeight(padding);
-        main.stroke(150, 0, 0); // {R}GB <=> {X}YZ
+        main.stroke(120, 0, 0); // {R}GB <=> {X}YZ
         main.fill(255);
         main.rect(padding / 2f, padding / 2f, width - padding, height - padding);
-
-        //Plot
-        drawPlot();
-
-        main.fill(0);
-        main.textAlign(PConstants.CENTER);
-        main.text(title, width / 2f, 12);
-
-        main.popMatrix();
     }
 
     @Override
-    public void moveIn() {
-        this.currentDepth++;
-        currentDepth = currentDepth == nCols ? nCols - 1 : currentDepth;
+    protected void drawDepthIndicator() {
+        main.noStroke();
+        main.fill(255);
+        main.rectMode(PConstants.CENTER);
+
+        main.rect(width / 2, height - padding / 2, width - 2 * padding, depthIndicatorWidth);
+
+        float knobX = PApplet.map(currentDepth, 0, maxDepth - 1, width - padding, padding);
+        main.fill(150);
+        main.rect(knobX, height - padding / 2, depthIndicatorKnobHeight, depthIndicatorKnobWidth);
+
+        main.fill(255);
+        //0 is on the right side:
+        main.text(maxDepth, padding / 2, height - padding / 2 + textHeight / 2 - 2);
+        main.text(0, width - padding / 2, height - padding / 2 + textHeight / 2 - 2);
+
+        main.rectMode(PConstants.CORNER);
     }
 }
