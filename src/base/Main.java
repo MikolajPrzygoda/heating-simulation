@@ -1,12 +1,11 @@
 package base;
 
-import controlP5.ControlP5;
 import processing.core.PApplet;
 import simulation.RoomPlan;
 import simulation.Simulation;
 import visualization.frame.Frame;
 import visualization.frame.FrontFrame;
-import visualization.frame.SideFrame;
+import visualization.frame.LeftSideFrame;
 import visualization.frame.TopFrame;
 
 
@@ -23,7 +22,7 @@ public class Main extends PApplet {
     private Simulation simulation;
     private Frame topFrame;
     private Frame frontFrame;
-    private Frame sideFrame;
+    private Frame leftSideFrame;
 
     @Override
     public void settings() {
@@ -37,25 +36,15 @@ public class Main extends PApplet {
 
         // Create three frames in three quarters of the window. each showing a room cross-section
         // from a different direction.
-        frontFrame = new FrontFrame(WIDTH / 2, HEIGHT / 2, 0, 0, simulation, this);
-        topFrame = new TopFrame(WIDTH / 2, HEIGHT / 2, 0, HEIGHT / 2, simulation, this);
-        sideFrame = new SideFrame(WIDTH / 2, HEIGHT / 2, WIDTH / 2, 0, simulation, this);
+        frontFrame = new FrontFrame(WIDTH / 2, HEIGHT / 2, WIDTH / 2, HEIGHT / 2, simulation, this);
+        topFrame = new TopFrame(WIDTH / 2, HEIGHT / 2, WIDTH / 2, 0, simulation, this);
+        leftSideFrame = new LeftSideFrame(WIDTH / 2, HEIGHT / 2, 0, HEIGHT / 2, simulation, this);
 
     }
 
     @Override
     public void setup() {
-        ControlP5 cp5 = new ControlP5(this);
 
-        cp5.addSlider("testSlider")
-                .setPosition(WIDTH / 2 + 10, HEIGHT / 2 + 10)
-                .setWidth(20)
-                .setHeight(200)
-                .setRange(0, 255);
-    }
-
-    public void testSlider(int val) {
-        System.out.println("test: " + val);
     }
 
     @Override
@@ -67,7 +56,7 @@ public class Main extends PApplet {
 
         frontFrame.draw();
         topFrame.draw();
-        sideFrame.draw();
+        leftSideFrame.draw();
     }
 
     @Override
@@ -86,10 +75,10 @@ public class Main extends PApplet {
                 frontFrame.moveOut();
                 break;
             case 'a':
-                sideFrame.moveIn();
+                leftSideFrame.moveOut();
                 break;
             case 'd':
-                sideFrame.moveOut();
+                leftSideFrame.moveIn();
                 break;
             case 'r':
                 simulation.reset();
@@ -97,12 +86,12 @@ public class Main extends PApplet {
             case ' ':
                 frontFrame.changeMode();
                 topFrame.changeMode();
-                sideFrame.changeMode();
+                leftSideFrame.changeMode();
                 break;
             case 'g':
                 frontFrame.changeGrid();
                 topFrame.changeGrid();
-                sideFrame.changeGrid();
+                leftSideFrame.changeGrid();
                 break;
 
         }

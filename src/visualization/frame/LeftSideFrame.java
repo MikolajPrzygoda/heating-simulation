@@ -5,15 +5,15 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 import simulation.Simulation;
 
-public class SideFrame extends Frame {
+public class LeftSideFrame extends Frame {
 
-    public SideFrame(int width, int height, int posX, int posY, Simulation simulation, Main main) {
+    public LeftSideFrame(int width, int height, int posX, int posY, Simulation simulation, Main main) {
         super(width, height, posX, posY, simulation, main);
 
         this.plotPixelHeight = (height - 2 * padding) / (float) nRows;
         this.plotPixelWidth = (width - 2 * padding) / (float) nPages;
         this.plot = new int[nRows][nPages];
-        this.title = "Side";
+        this.title = "Left side";
         this.maxDepth = nCols;
     }
 
@@ -25,7 +25,7 @@ public class SideFrame extends Frame {
         int x = currentDepth;
         for (int y = 0; y < nRows; y++) {
             for (int z = 0; z < nPages; z++) {
-                plot[y][z] = plotTemperature ?
+                plot[y][nPages - 1 - z] = plotTemperature ?
                         temp2color(simulation.getCell(z, y, x).getValue(), min, max) :
                         simulation.getCell(z, y, x).getTypeColor();
             }
@@ -48,14 +48,13 @@ public class SideFrame extends Frame {
 
         main.rect(width / 2, height - padding / 2, width - 2 * padding, depthIndicatorWidth);
 
-        float knobX = PApplet.map(currentDepth, 0, maxDepth - 1, width - padding, padding);
+        float knobX = PApplet.map(currentDepth, 0, maxDepth - 1, padding, width - padding);
         main.fill(150);
         main.rect(knobX, height - padding / 2, depthIndicatorKnobHeight, depthIndicatorKnobWidth);
 
         main.fill(255);
-        //0 is on the right side:
-        main.text(maxDepth, padding / 2, height - padding / 2 + textHeight / 2 - 2);
-        main.text(0, width - padding / 2, height - padding / 2 + textHeight / 2 - 2);
+        main.text(0, padding / 2, height - padding / 2 + textHeight / 2 - 2);
+        main.text(maxDepth, width - padding / 2, height - padding / 2 + textHeight / 2 - 2);
 
         main.rectMode(PConstants.CORNER);
     }
