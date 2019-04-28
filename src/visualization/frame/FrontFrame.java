@@ -15,38 +15,27 @@ public class FrontFrame extends Frame {
     }
 
     @Override
-    public void draw() {
-        {
-            main.pushMatrix();
-            main.pushStyle();
-            main.translate(posX, posY);
-            main.noStroke();
+    public void loadPlot() {
+        float min = simulation.getMinValue();
+        float max = simulation.getMaxValue();
 
-            float min = simulation.getMinValue();
-            float max = simulation.getMaxValue();
-
-            int z = currentDepth;
-            for (int y = 0; y < nRows; y++) {
-                for (int x = 0; x < nCols; x++) {
-                    plot[y][x] = plotTemperature ?
-                            temp2color(simulation.getCell(z, y, x).getValue(), min, max) :
-                            simulation.getCell(z, y, x).getTypeColor();
-                }
+        int z = currentDepth;
+        for (int y = 0; y < nRows; y++) {
+            for (int x = 0; x < nCols; x++) {
+                plot[y][x] = plotTemperature ?
+                        temp2color(simulation.getCell(z, y, x).getValue(), min, max) :
+                        simulation.getCell(z, y, x).getTypeColor();
             }
-
-            for (int y = 0; y < plot.length; y++) {
-                for (int x = 0; x < plot[0].length; x++) {
-                    main.fill(plot[y][x]);
-                    main.rect(x * plotPixelWidth, y * plotPixelHeight, plotPixelWidth, plotPixelHeight);
-                }
-            }
-            main.fill(0);
-            main.textAlign(PConstants.CENTER);
-            main.text("Front", this.width / 2, 12);
-
-            main.popMatrix();
-            main.popStyle();
         }
+    }
+
+    @Override
+    public void draw() {
+        drawPlot();
+
+        main.fill(0);
+        main.textAlign(PConstants.CENTER);
+        main.text("Front", this.width / 2, 12);
     }
 
     @Override

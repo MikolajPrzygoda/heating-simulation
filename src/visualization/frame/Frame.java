@@ -36,6 +36,22 @@ public abstract class Frame {
         this.nCols = simulation.getWidth();
     }
 
+    protected abstract void loadPlot();
+
+    public void drawPlot() {
+        loadPlot();
+
+        main.translate(posX, posY);
+        main.noStroke();
+
+        for (int y = 0; y < plot.length; y++) {
+            for (int x = 0; x < plot[0].length; x++) {
+                main.fill(plot[y][x]);
+                main.rect(x * plotPixelWidth, y * plotPixelHeight, plotPixelWidth, plotPixelHeight);
+            }
+        }
+    }
+
     public abstract void draw();
 
     public int getCurrentDepth() {
