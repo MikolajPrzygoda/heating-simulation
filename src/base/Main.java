@@ -20,9 +20,11 @@ public class Main extends PApplet {
     private static final int HEIGHT = 700;
 
     private Simulation simulation;
-    private Frame topFrame;
-    private Frame frontFrame;
-    private Frame leftSideFrame;
+    public Frame topFrame;
+    public Frame frontFrame;
+    public Frame leftSideFrame;
+
+    private boolean isDrawingPaused = false;
 
     @Override
     public void settings() {
@@ -44,7 +46,6 @@ public class Main extends PApplet {
 
     @Override
     public void setup() {
-
     }
 
     @Override
@@ -93,7 +94,13 @@ public class Main extends PApplet {
                 topFrame.changeGrid();
                 leftSideFrame.changeGrid();
                 break;
-
+            case 'p':
+                if (isDrawingPaused)
+                    loop();
+                else
+                    noLoop();
+                isDrawingPaused = !isDrawingPaused;
+                break;
         }
     }
 }
