@@ -25,7 +25,7 @@ public class TopFrame extends Frame {
         int y = currentDepth;
         for (int z = 0; z < nPages; z++) {
             for (int x = 0; x < nCols; x++) {
-                plot[z][x] = plotTemperature ?
+                plot[nPages - 1 - z][x] = plotTemperature ?
                         temp2color(simulation.getCell(z, y, x).getValue(), min, max) :
                         simulation.getCell(z, y, x).getTypeColor();
             }
