@@ -10,8 +10,8 @@ public class TopFrame extends Frame {
     public TopFrame(int width, int height, int posX, int posY, Simulation simulation, Main main) {
         super(width, height, posX, posY, simulation, main);
 
-        this.plotPixelHeight = (height - 2 * padding) / (float) nPages;
-        this.plotPixelWidth = (width - 2 * padding) / (float) nCols;
+        this.plotPixelWidth = plotWidth / (float) nCols;
+        this.plotPixelHeight = plotHeight / (float) nPages;
         this.plot = new int[nPages][nCols];
         this.title = "Top";
         this.maxDepth = nRows;
@@ -46,7 +46,7 @@ public class TopFrame extends Frame {
         main.fill(255);
         main.rectMode(PConstants.CENTER);
 
-        main.rect(width - padding / 2, height / 2, depthIndicatorWidth, height - 2 * padding);
+        main.rect(width - padding / 2, height / 2, depthIndicatorWidth, plotHeight);
 
         float knobY = PApplet.map(currentDepth, 0, maxDepth - 1, padding, height - padding);
         main.fill(150);
@@ -57,5 +57,19 @@ public class TopFrame extends Frame {
         main.text(maxDepth, width - padding / 2, height - padding + textHeight + 4);
 
         main.rectMode(PConstants.CORNER);
+    }
+
+    @Override
+    protected void drawFramesOutlines(int xDepth, int yDepth, int zDepth) {
+        main.noFill();
+        main.strokeWeight(1);
+
+        //Draw LeftSideFrame
+        main.stroke(255, 0, 0);
+        main.rect(padding + xDepth * plotPixelWidth, padding, plotPixelWidth, plotHeight);
+
+        //Draw FrontFrame
+        main.stroke(0, 0, 255);
+        main.rect(padding, plotHeight + padding - (zDepth + 1) * plotPixelHeight, plotWidth, plotPixelHeight);
     }
 }

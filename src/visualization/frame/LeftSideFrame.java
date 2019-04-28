@@ -10,8 +10,8 @@ public class LeftSideFrame extends Frame {
     public LeftSideFrame(int width, int height, int posX, int posY, Simulation simulation, Main main) {
         super(width, height, posX, posY, simulation, main);
 
-        this.plotPixelHeight = (height - 2 * padding) / (float) nRows;
-        this.plotPixelWidth = (width - 2 * padding) / (float) nPages;
+        this.plotPixelWidth = plotWidth / (float) nPages;
+        this.plotPixelHeight = plotHeight / (float) nRows;
         this.plot = new int[nRows][nPages];
         this.title = "Left side";
         this.maxDepth = nCols;
@@ -46,7 +46,7 @@ public class LeftSideFrame extends Frame {
         main.fill(255);
         main.rectMode(PConstants.CENTER);
 
-        main.rect(width / 2, height - padding / 2, width - 2 * padding, depthIndicatorWidth);
+        main.rect(width / 2, height - padding / 2, plotWidth, depthIndicatorWidth);
 
         float knobX = PApplet.map(currentDepth, 0, maxDepth - 1, padding, width - padding);
         main.fill(150);
@@ -57,5 +57,19 @@ public class LeftSideFrame extends Frame {
         main.text(maxDepth, width - padding / 2, height - padding / 2 + textHeight / 2 - 2);
 
         main.rectMode(PConstants.CORNER);
+    }
+
+    @Override
+    protected void drawFramesOutlines(int xDepth, int yDepth, int zDepth) {
+        main.noFill();
+        main.strokeWeight(1);
+
+        //Draw FrontFrame
+        main.stroke(0, 0, 255);
+        main.rect(plotWidth + padding - (zDepth + 1) * plotPixelWidth, padding, plotPixelWidth, plotHeight);
+
+        //Draw TopFrame
+        main.stroke(0, 255, 0);
+        main.rect(padding, padding + yDepth * plotPixelHeight, plotWidth, plotPixelHeight);
     }
 }

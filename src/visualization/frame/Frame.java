@@ -20,6 +20,7 @@ public abstract class Frame {
     protected int textHeight = 12;
     protected int padding = 24;
 
+    protected int plotWidth, plotHeight;
     protected float plotPixelWidth, plotPixelHeight;
     protected int[][] plot;
     protected boolean plotTemperature = true;
@@ -33,6 +34,8 @@ public abstract class Frame {
     public Frame(int width, int height, int posX, int posY, Simulation simulation, Main main) {
         this.width = width;
         this.height = height;
+        this.plotWidth = width - 2 * padding;
+        this.plotHeight = height - 2 * padding;
         this.posX = posX;
         this.posY = posY;
         this.simulation = simulation;
@@ -69,7 +72,6 @@ public abstract class Frame {
     protected abstract void drawDepthIndicator();
 
     public void draw() {
-        main.pushMatrix();
         main.translate(posX, posY);
 
         //Border
@@ -81,15 +83,23 @@ public abstract class Frame {
         //Title
         main.fill(255);
         main.textAlign(PConstants.CENTER);
-        main.text(title, width / 2f, textHeight);
+        main.text(title, width / 2f, padding / 2 + textHeight / 3);
 
         //Depth Indicator
         drawDepthIndicator();
 
-        main.popMatrix();
+        drawFramesOutlines(
+                main.leftSideFrame.getCurrentDepth(),
+                main.topFrame.getCurrentDepth(),
+                main.frontFrame.getCurrentDepth()
+        );
+
+        main.translate(-posX, -posY);
     }
 
     protected abstract void drawBorder();
+
+    protected abstract void drawFramesOutlines(int xDepth, int yDepth, int zDepth);
 
     public int getCurrentDepth() {
         return currentDepth;
