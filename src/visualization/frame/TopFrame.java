@@ -1,6 +1,7 @@
 package visualization.frame;
 
 import base.Main;
+import processing.core.PConstants;
 import simulation.Simulation;
 
 public class TopFrame extends Frame {
@@ -8,9 +9,10 @@ public class TopFrame extends Frame {
     public TopFrame(int width, int height, int posX, int posY, Simulation simulation, Main main) {
         super(width, height, posX, posY, simulation, main);
 
-        this.plotPixelHeight = height / (float) nPages;
-        this.plotPixelWidth = width / (float) nCols;
+        this.plotPixelHeight = (height - 2 * padding) / (float) nPages;
+        this.plotPixelWidth = (width - 2 * padding) / (float) nCols;
         this.plot = new int[nPages][nCols];
+        this.title = "Top";
     }
 
     @Override
@@ -30,17 +32,28 @@ public class TopFrame extends Frame {
 
     @Override
     public void draw() {
+        main.pushMatrix();
+        main.translate(posX, posY);
+
+        //Border
+        main.strokeWeight(padding);
+        main.stroke(0, 150, 0); // R{G}B <=> X{Y}Z
+        main.fill(255);
+        main.rect(padding / 2f, padding / 2f, width - padding, height - padding);
+
+        //Plot
         drawPlot();
 
-        main.stroke(255);
         main.fill(0);
-        main.text("Top", this.width / 2, 12);
+        main.textAlign(PConstants.CENTER);
+        main.text(title, width / 2f, 12);
 
+        main.popMatrix();
     }
 
     @Override
     public void moveIn() {
         this.currentDepth++;
-        currentDepth = currentDepth == nRows ? nRows-1 : currentDepth;
+        currentDepth = currentDepth == nRows ? nRows - 1 : currentDepth;
     }
 }

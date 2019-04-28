@@ -9,9 +9,10 @@ public class FrontFrame extends Frame {
     public FrontFrame(int width, int height, int posX, int posY, Simulation simulation, Main main) {
         super(width, height, posX, posY, simulation, main);
 
-        this.plotPixelHeight = height / (float) nRows;
-        this.plotPixelWidth = width / (float) nCols;
+        this.plotPixelHeight = (height - 2 * padding) / (float) nRows;
+        this.plotPixelWidth = (width - 2 * padding) / (float) nCols;
         this.plot = new int[nRows][nCols];
+        this.title = "Front";
     }
 
     @Override
@@ -31,11 +32,24 @@ public class FrontFrame extends Frame {
 
     @Override
     public void draw() {
+        main.pushMatrix();
+        main.translate(posX, posY);
+
+        //Border
+        main.strokeWeight(padding);
+        main.stroke(0, 0, 150); // RG{B} <=> XY{Z}
+        main.fill(255);
+        main.rect(padding / 2f, padding / 2f, width - padding, height - padding);
+
+        //Plot
         drawPlot();
 
+        //Title
         main.fill(0);
         main.textAlign(PConstants.CENTER);
-        main.text("Front", this.width / 2, 12);
+        main.text(title, width / 2, 12);
+
+        main.popMatrix();
     }
 
     @Override

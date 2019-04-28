@@ -16,6 +16,9 @@ public abstract class Frame {
     protected int nRows;
     protected int nCols;
 
+    protected String title = "";
+    protected int padding = 16;
+
     protected float plotPixelWidth;
     protected float plotPixelHeight;
     protected int[][] plot;
@@ -41,15 +44,15 @@ public abstract class Frame {
     public void drawPlot() {
         loadPlot();
 
-        main.translate(posX, posY);
+        main.translate(padding, padding);
         main.noStroke();
-
         for (int y = 0; y < plot.length; y++) {
             for (int x = 0; x < plot[0].length; x++) {
                 main.fill(plot[y][x]);
                 main.rect(x * plotPixelWidth, y * plotPixelHeight, plotPixelWidth, plotPixelHeight);
             }
         }
+        main.translate(-padding, -padding);
     }
 
     public abstract void draw();
@@ -76,5 +79,9 @@ public abstract class Frame {
 
     public void changeMode() {
         this.plotTemperature = !this.plotTemperature;
+    }
+
+    public void setPadding(int padding) {
+        this.padding = padding;
     }
 }

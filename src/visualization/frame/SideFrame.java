@@ -1,6 +1,7 @@
 package visualization.frame;
 
 import base.Main;
+import processing.core.PConstants;
 import simulation.Simulation;
 
 public class SideFrame extends Frame {
@@ -8,9 +9,10 @@ public class SideFrame extends Frame {
     public SideFrame(int width, int height, int posX, int posY, Simulation simulation, Main main) {
         super(width, height, posX, posY, simulation, main);
 
-        this.plotPixelHeight = height / (float) nRows;
-        this.plotPixelWidth = width / (float) nPages;
+        this.plotPixelHeight = (height - 2 * padding) / (float) nRows;
+        this.plotPixelWidth = (width - 2 * padding) / (float) nPages;
         this.plot = new int[nRows][nPages];
+        this.title = "Side";
     }
 
     @Override
@@ -30,16 +32,28 @@ public class SideFrame extends Frame {
 
     @Override
     public void draw() {
+        main.pushMatrix();
+        main.translate(posX, posY);
+
+        //Border
+        main.strokeWeight(padding);
+        main.stroke(150, 0, 0); // {R}GB <=> {X}YZ
+        main.fill(255);
+        main.rect(padding / 2f, padding / 2f, width - padding, height - padding);
+
+        //Plot
         drawPlot();
 
-        main.stroke(255);
         main.fill(0);
-        main.text("Side", this.width / 2, 12);
+        main.textAlign(PConstants.CENTER);
+        main.text(title, width / 2f, 12);
+
+        main.popMatrix();
     }
 
     @Override
     public void moveIn() {
         this.currentDepth++;
-        currentDepth = currentDepth == nCols ? nCols-1 : currentDepth;
+        currentDepth = currentDepth == nCols ? nCols - 1 : currentDepth;
     }
 }
