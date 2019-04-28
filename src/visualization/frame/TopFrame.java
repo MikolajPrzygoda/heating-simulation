@@ -36,42 +36,42 @@ public class TopFrame extends Frame {
 
     @Override
     public void drawBorder() {
-        main.strokeWeight(padding);
-        main.stroke(0, 120, 0); // R{G}B <=> X{Y}Z
-        main.fill(255);
-        main.rect(padding / 2f, padding / 2f, width - padding, height - padding);
+        canvas.strokeWeight(padding);
+        canvas.stroke(0, 120, 0); // R{G}B <=> X{Y}Z
+        canvas.fill(255);
+        canvas.rect(padding / 2f, padding / 2f, width - padding, height - padding);
     }
 
     @Override
     protected void drawDepthIndicator() {
-        main.noStroke();
-        main.fill(255);
-        main.rectMode(PConstants.CENTER);
+        canvas.noStroke();
+        canvas.fill(255);
+        canvas.rectMode(PConstants.CENTER);
 
-        main.rect(width - padding / 2, height / 2, depthIndicatorWidth, plotHeight);
+        canvas.rect(width - padding / 2, height / 2, depthIndicatorWidth, plotHeight);
 
         float knobY = PApplet.map(currentDepth, 0, maxDepth - 1, padding, height - padding);
-        main.fill(150);
-        main.rect(width - padding / 2, knobY, depthIndicatorKnobWidth, depthIndicatorKnobHeight);
+        canvas.fill(depthIndicatorKnobColor);
+        canvas.rect(width - padding / 2, knobY, depthIndicatorKnobWidth, depthIndicatorKnobHeight);
 
-        main.fill(255);
-        main.text(0, width - padding / 2, padding - 6);
-        main.text(maxDepth, width - padding / 2, height - padding + textHeight + 4);
+        canvas.fill(255);
+        canvas.text(0, width - padding / 2, padding - 6);
+        canvas.text(maxDepth, width - padding / 2, height - padding + textHeight + 4);
 
-        main.rectMode(PConstants.CORNER);
+        canvas.rectMode(PConstants.CORNER);
     }
 
     @Override
     protected void drawFramesOutlines(int xDepth, int yDepth, int zDepth) {
-        main.noFill();
-        main.strokeWeight(1);
+        canvas.noFill();
+        canvas.strokeWeight(1);
 
         //Draw LeftSideFrame
-        main.stroke(255, 0, 0);
-        main.rect(padding + xDepth * plotPixelWidth, padding, plotPixelWidth, plotHeight);
+        canvas.stroke(255, 0, 0);
+        canvas.rect(padding + xDepth * plotPixelWidth, padding, plotPixelWidth, plotHeight);
 
         //Draw FrontFrame
-        main.stroke(0, 0, 255);
-        main.rect(padding, plotHeight + padding - (zDepth + 1) * plotPixelHeight, plotWidth, plotPixelHeight);
+        canvas.stroke(0, 0, 255);
+        canvas.rect(padding, plotHeight + padding - (zDepth + 1) * plotPixelHeight, plotWidth, plotPixelHeight);
     }
 }

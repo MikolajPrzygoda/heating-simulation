@@ -4,10 +4,12 @@ import base.Main;
 import controlP5.Toggle;
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PGraphics;
 import simulation.Simulation;
 
 public abstract class Frame {
 
+    protected PGraphics canvas;
     protected Main main;
     protected Simulation simulation;
 
@@ -28,21 +30,26 @@ public abstract class Frame {
     protected int depthIndicatorWidth = padding / 4;
     protected int depthIndicatorKnobWidth = depthIndicatorWidth * 2;
     protected int depthIndicatorKnobHeight = 6;
+    protected int depthIndicatorKnobColor = 100;
 
 
     public Frame(int width, int height, int posX, int posY, Simulation simulation, Main main) {
         this.width = width;
         this.height = height;
-        this.plotWidth = width - 2 * padding;
-        this.plotHeight = height - 2 * padding;
         this.posX = posX;
         this.posY = posY;
         this.simulation = simulation;
         this.main = main;
 
+        this.canvas = main.createGraphics(width, height);
+        canvas.noSmooth();
+
         this.nPages = simulation.getDepth();
         this.nRows = simulation.getHeight();
         this.nCols = simulation.getWidth();
+
+        this.plotWidth = width - 2 * padding;
+        this.plotHeight = height - 2 * padding;
     }
 
     protected abstract void loadPlot();
@@ -50,33 +57,33 @@ public abstract class Frame {
     protected void drawPlot() {
         loadPlot();
 
-        main.translate(padding, padding);
+        canvas.translate(padding, padding);
 
         //Set cell stroke according to gui controls.
         if (((Toggle) main.guiController.getController("grid")).getState()) {
             if (((Toggle) main.guiController.getController("translucent")).getState())
-                main.stroke(140, 80);
+                canvas.stroke(140, 80);
             else
-                main.stroke(140);
-            main.strokeWeight(1);
+                canvas.stroke(140);
+            canvas.strokeWeight(1);
         }
         else
-            main.noStroke();
+            canvas.noStroke();
 
         for (int y = 0; y < plot.length; y++) {
             for (int x = 0; x < plot[0].length; x++) {
-                main.fill(plot[y][x]);
-                main.rect(x * plotPixelWidth, y * plotPixelHeight, plotPixelWidth, plotPixelHeight);
+                canvas.fill(plot[y][x]);
+                canvas.rect(x * plotPixelWidth, y * plotPixelHeight, plotPixelWidth, plotPixelHeight);
             }
         }
 
-        main.translate(-padding, -padding);
+        canvas.translate(-padding, -padding);
     }
 
     protected abstract void drawDepthIndicator();
 
     public void draw() {
-        main.translate(posX, posY);
+        canvas.beginDraw();
 
         //Border
         drawBorder();
@@ -85,9 +92,9 @@ public abstract class Frame {
         drawPlot();
 
         //Title
-        main.fill(255);
-        main.textAlign(PConstants.CENTER);
-        main.text(title, width / 2f, padding / 2 + textHeight / 3);
+        canvas.fill(255);
+        canvas.textAlign(PConstants.CENTER);
+        canvas.text(title, width / 2f, padding / 2 + textHeight / 3);
 
         //Depth Indicator
         drawDepthIndicator();
@@ -99,7 +106,8 @@ public abstract class Frame {
                     main.frontFrame.getCurrentDepth()
             );
 
-        main.translate(-posX, -posY);
+        canvas.endDraw();
+        main.image(canvas, posX, posY);
     }
 
     protected abstract void drawBorder();
