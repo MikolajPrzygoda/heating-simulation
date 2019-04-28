@@ -1,6 +1,7 @@
 package visualization.frame;
 
 import base.Main;
+import controlP5.Toggle;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import simulation.Simulation;
@@ -25,9 +26,10 @@ public class TopFrame extends Frame {
         int y = currentDepth;
         for (int z = 0; z < nPages; z++) {
             for (int x = 0; x < nCols; x++) {
-                plot[nPages - 1 - z][x] = plotTemperature ?
-                        temp2color(simulation.getCell(z, y, x).getValue(), min, max) :
-                        simulation.getCell(z, y, x).getTypeColor();
+                if (((Toggle) main.guiController.getController("mode")).getState())
+                    plot[nPages - 1 - z][x] = simulation.getCell(z, y, x).getTypeColor();
+                else
+                    plot[nPages - 1 - z][x] = temp2color(simulation.getCell(z, y, x).getValue(), min, max);
             }
         }
     }

@@ -1,6 +1,8 @@
 package base;
 
+import controlP5.*;
 import processing.core.PApplet;
+import processing.core.PFont;
 import simulation.RoomPlan;
 import simulation.Simulation;
 import visualization.frame.Frame;
@@ -23,8 +25,8 @@ public class Main extends PApplet {
     public Frame topFrame;
     public Frame frontFrame;
     public Frame leftSideFrame;
+    public ControlP5 guiController;
 
-    private boolean isDrawingPaused = false;
 
     @Override
     public void settings() {
@@ -46,6 +48,7 @@ public class Main extends PApplet {
 
     @Override
     public void setup() {
+        createGUI();
     }
 
     @Override
@@ -84,23 +87,93 @@ public class Main extends PApplet {
             case 'r':
                 simulation.reset();
                 break;
-            case ' ':
-                frontFrame.changeMode();
-                topFrame.changeMode();
-                leftSideFrame.changeMode();
+            case 'm':
+                ((Toggle) guiController.getController("mode")).toggle();
                 break;
             case 'g':
-                frontFrame.changeGrid();
-                topFrame.changeGrid();
-                leftSideFrame.changeGrid();
+                ((Toggle) guiController.getController("grid")).toggle();
                 break;
             case 'p':
-                if (isDrawingPaused)
-                    loop();
-                else
-                    noLoop();
-                isDrawingPaused = !isDrawingPaused;
+                ((Toggle) guiController.getController("pause")).toggle();
+                break;
+            case 'o':
+                ((Toggle) guiController.getController("outlines")).toggle();
                 break;
         }
     }
+
+    private void createGUI() {
+        guiController = new ControlP5(this);
+
+        PFont pfont = createFont("DejaVu Sans Mono", 12, true);
+        guiController.setFont(new ControlFont(pfont));
+
+        guiController.addLabel("Options:")
+                .setPosition(16, 16);
+
+        Toggle pauseToggle = guiController.addToggle("pause")
+                .setPosition(16, 46)
+                .setSize(20, 20)
+                .setValue(false)
+                .addListener(this::pauseDrawing);
+        pauseToggle
+                .getCaptionLabel()
+                .toUpperCase(false)
+                .setText("(P)ause drawing")
+                .align(ControlP5.RIGHT_OUTSIDE, ControlP5.CENTER)
+                .setPaddingX(6);
+
+        Toggle modeToggle = guiController.addToggle("mode")
+                .setPosition(16, 86)
+                .setSize(20, 20)
+                .setValue(false);
+        modeToggle
+                .getCaptionLabel()
+                .toUpperCase(false)
+                .setText("Frames' (M)ode - Show temperature / cell type")
+                .align(ControlP5.RIGHT_OUTSIDE, ControlP5.CENTER)
+                .setPaddingX(6);
+
+        Toggle outlinesToggle = guiController.addToggle("outlines")
+                .setPosition(16, 126)
+                .setSize(20, 20)
+                .setValue(true);
+        outlinesToggle
+                .getCaptionLabel()
+                .toUpperCase(false)
+                .setText("Show frame (o)utlines")
+                .align(ControlP5.RIGHT_OUTSIDE, ControlP5.CENTER)
+                .setPaddingX(6);
+
+        Toggle gridToggle = guiController.addToggle("grid")
+                .setPosition(16, 166)
+                .setSize(20, 20)
+                .setValue(false);
+        gridToggle
+                .getCaptionLabel()
+                .toUpperCase(false)
+                .setText("Show (g)rid")
+                .align(ControlP5.RIGHT_OUTSIDE, ControlP5.CENTER)
+                .setPaddingX(6);
+
+        Toggle translucentToggle = guiController.addToggle("translucent")
+                .setPosition(36, 206)
+                .setSize(20, 20)
+                .setValue(true);
+        translucentToggle
+                .getCaptionLabel()
+                .toUpperCase(false)
+                .setText("Translucent grid")
+                .align(ControlP5.RIGHT_OUTSIDE, ControlP5.CENTER)
+                .setPaddingX(6);
+    }
+
+    // =========================== ControlP5 GUI Listeners ===========================
+    private void pauseDrawing(ControlEvent controlEvent) {
+        if (((Toggle) controlEvent.getController()).getState())
+            noLoop();
+        else
+            loop();
+    }
+
 }

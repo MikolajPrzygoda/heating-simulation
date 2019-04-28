@@ -1,6 +1,7 @@
 package visualization.frame;
 
 import base.Main;
+import controlP5.Toggle;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import simulation.Simulation;
@@ -23,8 +24,6 @@ public abstract class Frame {
     protected int plotWidth, plotHeight;
     protected float plotPixelWidth, plotPixelHeight;
     protected int[][] plot;
-    protected boolean plotTemperature = true;
-    private boolean plotGrid = false;
 
     protected int depthIndicatorWidth = padding / 4;
     protected int depthIndicatorKnobWidth = depthIndicatorWidth * 2;
@@ -53,12 +52,17 @@ public abstract class Frame {
 
         main.translate(padding, padding);
 
-        if (plotGrid) { //Kinda expensive so it's off by default :c
-            main.stroke(140, 50);
+        //Set cell stroke according to gui controls.
+        if (((Toggle) main.guiController.getController("grid")).getState()) {
+            if (((Toggle) main.guiController.getController("translucent")).getState())
+                main.stroke(140, 80);
+            else
+                main.stroke(140);
             main.strokeWeight(1);
-        } else {
-            main.noStroke();
         }
+        else
+            main.noStroke();
+
         for (int y = 0; y < plot.length; y++) {
             for (int x = 0; x < plot[0].length; x++) {
                 main.fill(plot[y][x]);
@@ -88,11 +92,12 @@ public abstract class Frame {
         //Depth Indicator
         drawDepthIndicator();
 
-        drawFramesOutlines(
-                main.leftSideFrame.getCurrentDepth(),
-                main.topFrame.getCurrentDepth(),
-                main.frontFrame.getCurrentDepth()
-        );
+        if (((Toggle) main.guiController.getController("outlines")).getState())
+            drawFramesOutlines(
+                    main.leftSideFrame.getCurrentDepth(),
+                    main.topFrame.getCurrentDepth(),
+                    main.frontFrame.getCurrentDepth()
+            );
 
         main.translate(-posX, -posY);
     }
@@ -122,14 +127,6 @@ public abstract class Frame {
         int r = (int) PApplet.map((float) value, (float) min, (float) max, 0, 255);
         int b = 255 - r;
         return main.color(r, 0, b);
-    }
-
-    public void changeMode() {
-        this.plotTemperature = !this.plotTemperature;
-    }
-
-    public void changeGrid() {
-        this.plotGrid = !this.plotGrid;
     }
 
     public void setPadding(int padding) {

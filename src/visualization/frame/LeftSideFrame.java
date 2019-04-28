@@ -1,6 +1,7 @@
 package visualization.frame;
 
 import base.Main;
+import controlP5.Toggle;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import simulation.Simulation;
@@ -25,9 +26,10 @@ public class LeftSideFrame extends Frame {
         int x = currentDepth;
         for (int y = 0; y < nRows; y++) {
             for (int z = 0; z < nPages; z++) {
-                plot[y][nPages - 1 - z] = plotTemperature ?
-                        temp2color(simulation.getCell(z, y, x).getValue(), min, max) :
-                        simulation.getCell(z, y, x).getTypeColor();
+                if (((Toggle) main.guiController.getController("mode")).getState())
+                    plot[y][nPages - 1 - z] = simulation.getCell(z, y, x).getTypeColor();
+                else
+                    plot[y][nPages - 1 - z] = temp2color(simulation.getCell(z, y, x).getValue(), min, max);
             }
         }
     }
