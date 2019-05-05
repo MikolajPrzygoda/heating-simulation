@@ -1,6 +1,9 @@
 package base;
 
-import controlP5.*;
+import controlP5.ControlEvent;
+import controlP5.ControlFont;
+import controlP5.ControlP5;
+import controlP5.Toggle;
 import processing.core.PApplet;
 import processing.core.PFont;
 import simulation.RoomPlan;
@@ -9,6 +12,11 @@ import visualization.frame.Frame;
 import visualization.frame.FrontFrame;
 import visualization.frame.LeftSideFrame;
 import visualization.frame.TopFrame;
+
+
+/*TODO:
+    - Take into account different surface areas of cells when the simulation has different x/y/z sizes.
+ */
 
 
 public class Main extends PApplet {
