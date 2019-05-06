@@ -7,7 +7,10 @@ public class HeaterCell extends Cell {
     private int typeColor = Color.fromRGB(255, 69, 40);
 
     public HeaterCell(){
-        this.value = 1;
+        this.temperature = 1;
+        this.mass = CELL_VOLUME * CellParameters.HEATER_DENSITY;
+        this.heatCapacity = this.mass * CellParameters.HEATER_SPECIFIC_HEAT_CAPACITY;
+        this.heatConductivity = CellParameters.HEATER_THERMAL_CONDUCTIVITY;
     }
 
     @Override

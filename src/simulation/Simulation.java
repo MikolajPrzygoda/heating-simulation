@@ -49,7 +49,7 @@ public class Simulation {
         for (int z = 0; z < depth; z++) {
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
-                    nextRoomValues[z][y][x] = room[z][y][x].getValue();
+                    nextRoomValues[z][y][x] = room[z][y][x].getTemperature();
                 }
             }
         }
@@ -59,17 +59,7 @@ public class Simulation {
         for (int z = 0; z < depth; z++) {
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
-                    room[z][y][x].setValue(nextRoomValues[z][y][x]);
-                }
-            }
-        }
-    }
-
-    public void reset(){
-        for (int z = 0; z < depth; z++) {
-            for (int y = 0; y < height; y++) {
-                for (int x = 0; x < width; x++) {
-                    room[z][y][x].setValue( 0.5 );
+                    room[z][y][x].setTemperature(nextRoomValues[z][y][x]);
                 }
             }
         }
