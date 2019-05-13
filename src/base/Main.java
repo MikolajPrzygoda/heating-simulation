@@ -214,11 +214,11 @@ public class Main extends PApplet{
                 .setPaddingX(6);
 
         Slider timeStepSlider = guiController.addSlider("timeStep")
-                .setRange(0, 30)
+                .setRange(0, 20)
                 .setValue(5)
                 .setPosition(16, 246)
                 .setSize(160, 20)
-                .setNumberOfTickMarks(31) //Every second: (30-0) + 1
+                .setNumberOfTickMarks(21) //Every second: (20-0) + 1
                 .showTickMarks(false)
                 .snapToTickMarks(true)
                 .addListener(e -> simulation.setTimeStep((int) e.getValue()));
