@@ -18,4 +18,12 @@ public class OutsideCell extends Cell {
     public int getTypeColor() {
         return typeColor;
     }
+
+    /**
+     * Overridden to not change this cell's temperature - it's and outside cell that has constant temperature.
+     */
+    @Override
+    public void applyEnergyChange(){
+        this.energyChange = 0;
+    }
 }
