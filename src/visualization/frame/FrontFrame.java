@@ -29,7 +29,7 @@ public class FrontFrame extends Frame {
                 if (((Toggle) main.guiController.getController("mode")).getState())
                     plot[y][x] = simulation.getCell(z, y, x).getTypeColor();
                 else
-                    plot[y][x] = temp2color(simulation.getCell(z, y, x).getValue(), min, max);
+                    plot[y][x] = temp2color(simulation.getCell(z, y, x).getTemperature(), min, max);
             }
         }
     }
