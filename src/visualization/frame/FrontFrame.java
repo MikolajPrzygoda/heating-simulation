@@ -20,8 +20,8 @@ public class FrontFrame extends Frame {
 
     @Override
     public void loadPlot() {
-        float min = simulation.getMinValue();
-        float max = simulation.getMaxValue();
+        double min = simulation.getMinValue();
+        double max = simulation.getMaxValue();
 
         int z = currentDepth;
         for (int y = 0; y < nRows; y++) {

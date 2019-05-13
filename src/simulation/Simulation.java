@@ -101,11 +101,33 @@ public class Simulation{
         elapsedTime += timeStep;
     }
 
-    public float getMinValue(){
-        return 0;
+    public double getMinValue(){
+        double result = Double.POSITIVE_INFINITY;
+
+        for(int z = 0; z < depth; z++){
+            for(int y = 0; y < height; y++){
+                for(int x = 0; x < width; x++){
+                    if(room[z][y][x].getTemperature() < result)
+                        result = room[z][y][x].getTemperature();
+                }
+            }
+        }
+
+        return result;
     }
 
-    public float getMaxValue(){
-        return 1;
+    public double getMaxValue(){
+        double result = Double.NEGATIVE_INFINITY;
+
+        for(int z = 0; z < depth; z++){
+            for(int y = 0; y < height; y++){
+                for(int x = 0; x < width; x++){
+                    if(room[z][y][x].getTemperature() > result)
+                        result = room[z][y][x].getTemperature();
+                }
+            }
+        }
+
+        return result;
     }
 }

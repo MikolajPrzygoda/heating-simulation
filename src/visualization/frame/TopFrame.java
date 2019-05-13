@@ -20,8 +20,8 @@ public class TopFrame extends Frame {
 
     @Override
     protected void loadPlot() {
-        float min = simulation.getMinValue();
-        float max = simulation.getMaxValue();
+        double min = simulation.getMinValue();
+        double max = simulation.getMaxValue();
 
         int y = currentDepth;
         for (int z = 0; z < nPages; z++) {

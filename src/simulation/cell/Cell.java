@@ -12,7 +12,7 @@ public abstract class Cell{
     /**
      * Current cell's temperature measured in [°C].
      */
-    protected double temperature; //[deg C]
+    protected double temperature = 12; //[deg C]
 
     /**
      * Mass of the material of the cube, calculated based on cube's volume and density, in [kg].

@@ -20,8 +20,8 @@ public class LeftSideFrame extends Frame {
 
     @Override
     protected void loadPlot() {
-        float min = simulation.getMinValue();
-        float max = simulation.getMaxValue();
+        double min = simulation.getMinValue();
+        double max = simulation.getMaxValue();
 
         int x = currentDepth;
         for (int y = 0; y < nRows; y++) {

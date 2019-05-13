@@ -7,8 +7,6 @@ public class OutsideCell extends Cell {
     private int typeColor = Color.fromRGB(45, 131, 168);
 
     public OutsideCell(){
-        this.temperature = 0;
-
         this.mass = CELL_VOLUME * CellParameters.AIR_DENSITY;
         this.heatCapacity = this.mass * CellParameters.AIR_SPECIFIC_HEAT_CAPACITY;
         this.heatConductivity = CellParameters.AIR_THERMAL_CONDUCTIVITY;
