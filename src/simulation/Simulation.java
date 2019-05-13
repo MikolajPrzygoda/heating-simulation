@@ -5,12 +5,12 @@ import util.int3d;
 
 public class Simulation{
 
-    public static final double TIME_STEP = 0.1;
-
     private Cell[][][] room;
     private int depth;
     private int height;
     private int width;
+    private int timeStep = 60;
+    private int elapsedTime = 0;
 
 
     public Simulation(RoomPlan roomPlan){
@@ -46,6 +46,14 @@ public class Simulation{
         return width;
     }
 
+    public int getTimeStep(){
+        return timeStep;
+    }
+
+    public void setTimeStep(int timeStep){
+        this.timeStep = timeStep;
+    }
+
     public void update(){
         /*
         Calculate heat flow between cells.
@@ -63,20 +71,20 @@ public class Simulation{
         for(int z = 0; z < depth - 1; z++){
             for(int y = 0; y < height - 1; y++){
                 for(int x = 0; x < width - 1; x++){
-                    room[z][y][x].updateEnergyFlow(room[z + 1][y][x], 1);
-                    room[z][y][x].updateEnergyFlow(room[z][y + 1][x], 1);
-                    room[z][y][x].updateEnergyFlow(room[z][y][x + 1], 1);
+                    room[z][y][x].updateEnergyFlow(room[z + 1][y][x], 1, timeStep);
+                    room[z][y][x].updateEnergyFlow(room[z][y + 1][x], 1, timeStep);
+                    room[z][y][x].updateEnergyFlow(room[z][y][x + 1], 1, timeStep);
 
-                    room[z][y][x].updateEnergyFlow(room[z + 1][y + 1][x], 1.414);
-                    room[z][y][x].updateEnergyFlow(room[z + 1][y][x + 1], 1.414);
-                    room[z][y][x].updateEnergyFlow(room[z][y + 1][x + 1], 1.414);
+                    room[z][y][x].updateEnergyFlow(room[z + 1][y + 1][x], 1.414, timeStep);
+                    room[z][y][x].updateEnergyFlow(room[z + 1][y][x + 1], 1.414, timeStep);
+                    room[z][y][x].updateEnergyFlow(room[z][y + 1][x + 1], 1.414, timeStep);
 
-                    room[z][y][x].updateEnergyFlow(room[z + 1][y + 1][x + 1], 1.732);
+                    room[z][y][x].updateEnergyFlow(room[z + 1][y + 1][x + 1], 1.732, timeStep);
                 }
             }
         }
 
-        // Apply changes
+        //Apply changes
         for(int z = 0; z < depth; z++){
             for(int y = 0; y < height; y++){
                 for(int x = 0; x < width; x++){
@@ -84,6 +92,9 @@ public class Simulation{
                 }
             }
         }
+
+        //Increase time elapsed since the start of simulation
+        elapsedTime += timeStep;
     }
 
     public float getMinValue(){

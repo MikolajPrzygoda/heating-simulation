@@ -21,7 +21,7 @@ public class Main extends PApplet {
     private static final int WIDTH = 1200;
     private static final int HEIGHT = 700;
 
-    private Simulation simulation;
+    public Simulation simulation;
     public Frame topFrame;
     public Frame frontFrame;
     public Frame leftSideFrame;
@@ -79,9 +79,6 @@ public class Main extends PApplet {
                 break;
             case 'd':
                 leftSideFrame.moveIn();
-                break;
-            case 'r':
-                simulation.reset();
                 break;
             case 'm':
                 ((Toggle) guiController.getController("mode")).toggle();

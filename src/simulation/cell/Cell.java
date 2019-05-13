@@ -1,7 +1,5 @@
 package simulation.cell;
 
-import simulation.Simulation;
-
 public abstract class Cell{
 
     /**
@@ -31,8 +29,8 @@ public abstract class Cell{
     protected double heatCapacity; //[J/K]
 
     /**
-     * The amount of heat energy per second [W] that's gonna flow through 1 meter of material with 1 degree C/K of temperature
-     * difference between two sides of said material.
+     * The amount of heat energy per second [W] that's gonna flow through 1 meter of material with 1 degree C/K of
+     * temperature difference between two sides of said material.
      *
      * @see <a href="https://en.wikipedia.org/wiki/List_of_thermal_conductivities">Table of heat conductivities</a>
      */
@@ -40,8 +38,9 @@ public abstract class Cell{
 
     /**
      * Change of amount of energy in this cell between consecutive simulation 'frames'. This field is being updated
-     * by {@link #updateEnergyFlow(Cell, double)} method, and then, after the flow between all cells in the simulation has been
-     * accounted for, energyChange is being applied to cell's temperature with {@link #applyEnergyChange()}.
+     * by {@link #updateEnergyFlow(Cell, double, int)} method, and then, after the flow between all cells in the
+     * simulation has been accounted for, energyChange is being applied to cell's temperature with
+     * {@link #applyEnergyChange()}.
      */
     protected double energyChange;
 
@@ -71,13 +70,12 @@ public abstract class Cell{
      * so in the case of room heating simulation, we model heat exchange between two cells as flow through half the
      * cell in the first cell's material and through half of the other cell (with different material -> heat conductivity).
      */
-    public void updateEnergyFlow(Cell other, double dist){
+    public void updateEnergyFlow(Cell other, double dist, int timeStep){
 
         double dT = temperature - other.temperature;
-        double dt = Simulation.TIME_STEP;
 
         // Positive dQ means that heat flows: this->other, because of the way dT is calculated.
-        double dQ = dt * CELL_AREA * dT / (dist / 2 / this.heatConductivity + dist / 2 / other.heatConductivity);
+        double dQ = timeStep * CELL_AREA * dT / (dist / 2 / this.heatConductivity + dist / 2 / other.heatConductivity);
 
         this.energyChange -= dQ;
         other.energyChange += dQ;
