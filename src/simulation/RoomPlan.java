@@ -13,8 +13,8 @@ public class RoomPlan {
     private int wallThickness = 3;
     private int3d windowStart = new int3d(36, 10, 15);
     private int3d windowEnd = new int3d(38, 14, 25);
-    private int3d heaterStart = new int3d(5, 5, 5);
-    private int3d heaterEnd = new int3d(7, 7, 7);
+    private int3d heaterStart = new int3d(4, 12, 10);
+    private int3d heaterEnd = new int3d(6, 15, 16);
 
     public int getRoomDepth() {
         return roomDimms.z;
