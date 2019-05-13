@@ -5,6 +5,8 @@ import util.int3d;
 
 public class Simulation {
 
+    public static final double TIME_STEP = 0.1;
+
     private Cell[][][] room;
     private double[][][] nextRoomValues;
     private int depth;
