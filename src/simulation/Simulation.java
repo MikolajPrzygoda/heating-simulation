@@ -9,7 +9,7 @@ public class Simulation{
     private int depth;
     private int height;
     private int width;
-    private int timeStep = 60;
+    private int timeStep = 5;
     private int elapsedTime = 0;
 
 
@@ -52,6 +52,10 @@ public class Simulation{
 
     public void setTimeStep(int timeStep){
         this.timeStep = timeStep;
+    }
+
+    public int getElapsedTime(){
+        return elapsedTime;
     }
 
     public void update(){

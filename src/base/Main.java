@@ -63,6 +63,11 @@ public class Main extends PApplet{
 
         //FPS counter
         surface.setTitle(String.valueOf(frameRate));
+
+        //Update elapsedTime label
+        ((Textlabel) guiController.getController("elapsedTime")).setText(
+                "Elapsed time: " + simulation.getElapsedTime() / 60 + "m"
+        );
     }
 
     @Override
@@ -116,6 +121,11 @@ public class Main extends PApplet{
         guiController.addLabel("Options:")
                 .setPosition(16, 16);
 
+        guiController.addLabel("Information:")
+                .setPosition(416, 16);
+        guiController.addLabel("elapsedTime")
+                .setPosition(416, 46);
+
         Toggle pauseDrawingFramesToggle = guiController.addToggle("pauseDrawingFrames")
                 .setPosition(16, 46)
                 .setSize(20, 20)
@@ -130,7 +140,7 @@ public class Main extends PApplet{
         Toggle pauseSimulationToggle = guiController.addToggle("pauseSimulation")
                 .setPosition(216, 46)
                 .setSize(20, 20)
-                .setValue(false);
+                .setValue(true);
         pauseSimulationToggle
                 .getCaptionLabel()
                 .toUpperCase(false)
@@ -183,13 +193,14 @@ public class Main extends PApplet{
                 .setPaddingX(6);
 
         Slider timeStepSlider = guiController.addSlider("timeStep")
-                .setRange(0, 300)
-                .setValue(60)
+                .setRange(0, 30)
+                .setValue(5)
                 .setPosition(16, 246)
                 .setSize(160, 20)
-                .setNumberOfTickMarks(31) //Every 10s: (300-0)/10 + 1
+                .setNumberOfTickMarks(31) //Every second: (30-0) + 1
                 .showTickMarks(false)
-                .snapToTickMarks(true);
+                .snapToTickMarks(true)
+                .addListener(e -> simulation.setTimeStep((int) e.getValue()));
         timeStepSlider
                 .getCaptionLabel()
                 .toUpperCase(false)
