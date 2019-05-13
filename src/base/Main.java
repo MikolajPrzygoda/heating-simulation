@@ -3,8 +3,10 @@ package base;
 import controlP5.*;
 import processing.core.PApplet;
 import processing.core.PFont;
+import processing.event.MouseEvent;
 import simulation.RoomPlan;
 import simulation.Simulation;
+import simulation.cell.Cell;
 import visualization.frame.Frame;
 import visualization.frame.FrontFrame;
 import visualization.frame.LeftSideFrame;
@@ -112,6 +114,25 @@ public class Main extends PApplet{
         }
     }
 
+    @Override
+    public void mousePressed(MouseEvent event){
+        Cell cell;
+
+        if(event.getX() < WIDTH / 2){
+            cell = leftSideFrame.getCellAt(event.getX(), event.getY() - HEIGHT / 2);
+        }
+        else if(event.getY() < HEIGHT / 2){
+            cell = topFrame.getCellAt(event.getX() - WIDTH / 2, event.getY());
+        }
+        else{
+            cell = frontFrame.getCellAt(event.getX() - WIDTH / 2, event.getY() - HEIGHT / 2);
+        }
+
+        if(cell != null){
+            System.out.println("Temp: " + cell.getTemperature());
+        }
+    }
+
     private void createGUI(){
         guiController = new ControlP5(this);
 
@@ -210,12 +231,13 @@ public class Main extends PApplet{
 
         Slider heaterOutputPowerSlider = guiController.addSlider("heaterOutputPower")
                 .setRange(0, 2000)
-                .setValue(800)
+                .setValue(0)
                 .setPosition(16, 286)
                 .setSize(160, 20)
                 .setNumberOfTickMarks(41) //Every 50W: (2000-0)/50 + 1
                 .showTickMarks(false)
-                .snapToTickMarks(true);
+                .snapToTickMarks(true)
+                .addListener(e -> simulation.changeHeaterPower(e.getValue()));
         heaterOutputPowerSlider
                 .getCaptionLabel()
                 .toUpperCase(false)

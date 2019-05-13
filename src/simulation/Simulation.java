@@ -1,7 +1,11 @@
 package simulation;
 
 import simulation.cell.Cell;
+import simulation.cell.HeaterCell;
 import util.int3d;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Simulation{
 
@@ -11,7 +15,7 @@ public class Simulation{
     private int width;
     private int timeStep = 5;
     private int elapsedTime = 0;
-
+    private List<HeaterCell> heaterCells = new ArrayList<>();
 
     public Simulation(RoomPlan roomPlan){
 
@@ -25,6 +29,10 @@ public class Simulation{
             for(int y = 0; y < height; y++){
                 for(int x = 0; x < width; x++){
                     room[z][y][x] = roomPlan.getCellAt(new int3d(z, y, x));
+
+                    if(room[z][y][x] instanceof HeaterCell){
+                        heaterCells.add((HeaterCell) room[z][y][x]);
+                    }
                 }
             }
         }
@@ -92,7 +100,7 @@ public class Simulation{
         for(int z = 0; z < depth; z++){
             for(int y = 0; y < height; y++){
                 for(int x = 0; x < width; x++){
-                    room[z][y][x].applyEnergyChange();
+                    room[z][y][x].applyEnergyChange(timeStep);
                 }
             }
         }
@@ -102,32 +110,49 @@ public class Simulation{
     }
 
     public double getMinValue(){
-        double result = Double.POSITIVE_INFINITY;
+//        double result = Double.POSITIVE_INFINITY;
+//
+//        for(int z = 0; z < depth; z++){
+//            for(int y = 0; y < height; y++){
+//                for(int x = 0; x < width; x++){
+//                    if(room[z][y][x].getTemperature() < result)
+//                        result = room[z][y][x].getTemperature();
+//                }
+//            }
+//        }
+//
+//        if(result < 0 || result > 1000){
+//            System.out.println("WUT " + result);
+//        }
+//
+//        return result;
 
-        for(int z = 0; z < depth; z++){
-            for(int y = 0; y < height; y++){
-                for(int x = 0; x < width; x++){
-                    if(room[z][y][x].getTemperature() < result)
-                        result = room[z][y][x].getTemperature();
-                }
-            }
-        }
-
-        return result;
+        return 0;
     }
 
     public double getMaxValue(){
-        double result = Double.NEGATIVE_INFINITY;
+//        double result = Double.NEGATIVE_INFINITY;
+//
+//        for(int z = 0; z < depth; z++){
+//            for(int y = 0; y < height; y++){
+//                for(int x = 0; x < width; x++){
+//                    if(room[z][y][x].getTemperature() > result)
+//                        result = room[z][y][x].getTemperature();
+//                }
+//            }
+//        }
+//
+//        if(result < 0 || result > 1000){
+//            System.out.println("WUT " + result);
+//        }
+//
+//        return result;
 
-        for(int z = 0; z < depth; z++){
-            for(int y = 0; y < height; y++){
-                for(int x = 0; x < width; x++){
-                    if(room[z][y][x].getTemperature() > result)
-                        result = room[z][y][x].getTemperature();
-                }
-            }
-        }
+        return 30;
+    }
 
-        return result;
+    public void changeHeaterPower(double heaterPower){
+        double cellsPower = heaterPower / heaterCells.size();
+        heaterCells.forEach(cell -> cell.setPowerOutput(cellsPower));
     }
 }

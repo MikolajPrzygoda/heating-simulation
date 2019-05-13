@@ -40,7 +40,7 @@ public abstract class Cell{
      * Change of amount of energy in this cell between consecutive simulation 'frames'. This field is being updated
      * by {@link #updateEnergyFlow(Cell, double, int)} method, and then, after the flow between all cells in the
      * simulation has been accounted for, energyChange is being applied to cell's temperature with
-     * {@link #applyEnergyChange()}.
+     * {@link #applyEnergyChange(double)}.
      */
     protected double energyChange;
 
@@ -81,7 +81,7 @@ public abstract class Cell{
         other.energyChange += dQ;
     }
 
-    public void applyEnergyChange(){
+    public void applyEnergyChange(double timeStep){
         this.temperature += energyChange / heatCapacity;
         this.energyChange = 0;
     }

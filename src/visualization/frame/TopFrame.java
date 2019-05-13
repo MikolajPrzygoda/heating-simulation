@@ -5,6 +5,7 @@ import controlP5.Toggle;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import simulation.Simulation;
+import simulation.cell.Cell;
 
 public class TopFrame extends Frame {
 
@@ -73,5 +74,10 @@ public class TopFrame extends Frame {
         //Draw FrontFrame
         canvas.stroke(0, 0, 255);
         canvas.rect(padding, plotHeight + padding - (zDepth + 1) * plotPixelHeight, plotWidth, plotPixelHeight);
+    }
+
+    @Override
+    public Cell getCellAt(int u, int v){
+        return null;
     }
 }

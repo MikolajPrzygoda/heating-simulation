@@ -6,6 +6,7 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PGraphics;
 import simulation.Simulation;
+import simulation.cell.Cell;
 
 public abstract class Frame {
 
@@ -140,4 +141,6 @@ public abstract class Frame {
     public void setPadding(int padding) {
         this.padding = padding;
     }
+
+    public abstract Cell getCellAt(int u, int v);
 }

@@ -5,10 +5,11 @@ import controlP5.Toggle;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import simulation.Simulation;
+import simulation.cell.Cell;
 
-public class FrontFrame extends Frame {
+public class FrontFrame extends Frame{
 
-    public FrontFrame(int width, int height, int posX, int posY, Simulation simulation, Main main) {
+    public FrontFrame(int width, int height, int posX, int posY, Simulation simulation, Main main){
         super(width, height, posX, posY, simulation, main);
 
         this.plotPixelWidth = plotWidth / (float) nCols;
@@ -19,14 +20,14 @@ public class FrontFrame extends Frame {
     }
 
     @Override
-    public void loadPlot() {
+    public void loadPlot(){
         double min = simulation.getMinValue();
         double max = simulation.getMaxValue();
 
         int z = currentDepth;
-        for (int y = 0; y < nRows; y++) {
-            for (int x = 0; x < nCols; x++) {
-                if (((Toggle) main.guiController.getController("mode")).getState())
+        for(int y = 0; y < nRows; y++){
+            for(int x = 0; x < nCols; x++){
+                if(((Toggle) main.guiController.getController("mode")).getState())
                     plot[y][x] = simulation.getCell(z, y, x).getTypeColor();
                 else
                     plot[y][x] = temp2color(simulation.getCell(z, y, x).getTemperature(), min, max);
@@ -35,7 +36,7 @@ public class FrontFrame extends Frame {
     }
 
     @Override
-    protected void drawBorder() {
+    protected void drawBorder(){
         canvas.strokeWeight(padding);
         canvas.stroke(0, 0, 120); // RG{B} <=> XY{Z}
         canvas.fill(255);
@@ -43,7 +44,7 @@ public class FrontFrame extends Frame {
     }
 
     @Override
-    protected void drawDepthIndicator() {
+    protected void drawDepthIndicator(){
         canvas.noStroke();
         canvas.fill(255);
         canvas.rectMode(PConstants.CENTER);
@@ -62,7 +63,7 @@ public class FrontFrame extends Frame {
     }
 
     @Override
-    protected void drawFramesOutlines(int xDepth, int yDepth, int zDepth) {
+    protected void drawFramesOutlines(int xDepth, int yDepth, int zDepth){
         canvas.noFill();
         canvas.strokeWeight(1);
 
@@ -73,5 +74,17 @@ public class FrontFrame extends Frame {
         //Draw TopFrame
         canvas.stroke(0, 255, 0);
         canvas.rect(padding, padding + yDepth * plotPixelHeight, plotWidth, plotPixelHeight);
+    }
+
+    @Override
+    public Cell getCellAt(int u, int v){
+        if(u > padding && u < width - padding && v > padding && v < height - padding){
+            int z = currentDepth;
+            int y = (int) ((v - padding) / plotPixelHeight);
+            int x = (int) ((u - padding) / plotPixelWidth);
+
+            return simulation.getCell(z, y, x);
+        }
+        return null;
     }
 }

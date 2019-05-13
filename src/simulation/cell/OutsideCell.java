@@ -21,7 +21,7 @@ public class OutsideCell extends Cell {
      * Overridden to not change this cell's temperature - it's and outside cell that has constant temperature.
      */
     @Override
-    public void applyEnergyChange(){
+    public void applyEnergyChange(double timeStep){
         this.energyChange = 0;
     }
 }
