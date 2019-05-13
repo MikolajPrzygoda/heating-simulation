@@ -50,16 +50,19 @@ public class Main extends PApplet{
     @Override
     public void draw(){
         background(0);
-        surface.setTitle(String.valueOf(frameRate));
 
-        if(!((Toggle) guiController.getController("pauseSimulation")).getState())
+        if(!((Toggle) guiController.getController("pauseSimulation")).getState()){
             simulation.update();
+        }
 
         if(!((Toggle) guiController.getController("pauseDrawingFrames")).getState()){
             frontFrame.draw();
             topFrame.draw();
             leftSideFrame.draw();
         }
+
+        //FPS counter
+        surface.setTitle(String.valueOf(frameRate));
     }
 
     @Override
@@ -176,6 +179,36 @@ public class Main extends PApplet{
                 .getCaptionLabel()
                 .toUpperCase(false)
                 .setText("[t]ranslucent grid (Very costly)")
+                .align(ControlP5.RIGHT_OUTSIDE, ControlP5.CENTER)
+                .setPaddingX(6);
+
+        Slider timeStepSlider = guiController.addSlider("timeStep")
+                .setRange(0, 300)
+                .setValue(60)
+                .setPosition(16, 246)
+                .setSize(160, 20)
+                .setNumberOfTickMarks(31) //Every 10s: (300-0)/10 + 1
+                .showTickMarks(false)
+                .snapToTickMarks(true);
+        timeStepSlider
+                .getCaptionLabel()
+                .toUpperCase(false)
+                .setText("Time Step (in seconds)")
+                .align(ControlP5.RIGHT_OUTSIDE, ControlP5.CENTER)
+                .setPaddingX(6);
+
+        Slider heaterOutputPowerSlider = guiController.addSlider("heaterOutputPower")
+                .setRange(0, 2000)
+                .setValue(800)
+                .setPosition(16, 286)
+                .setSize(160, 20)
+                .setNumberOfTickMarks(41) //Every 50W: (2000-0)/50 + 1
+                .showTickMarks(false)
+                .snapToTickMarks(true);
+        heaterOutputPowerSlider
+                .getCaptionLabel()
+                .toUpperCase(false)
+                .setText("Heater output power (in watts)")
                 .align(ControlP5.RIGHT_OUTSIDE, ControlP5.CENTER)
                 .setPaddingX(6);
     }
