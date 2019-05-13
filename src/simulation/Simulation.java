@@ -3,18 +3,17 @@ package simulation;
 import simulation.cell.Cell;
 import util.int3d;
 
-public class Simulation {
+public class Simulation{
 
     public static final double TIME_STEP = 0.1;
 
     private Cell[][][] room;
-    private double[][][] nextRoomValues;
     private int depth;
     private int height;
     private int width;
 
 
-    public Simulation(RoomPlan roomPlan) {
+    public Simulation(RoomPlan roomPlan){
 
         this.depth = roomPlan.getRoomDepth();
         this.height = roomPlan.getRoomHeight();
@@ -22,11 +21,10 @@ public class Simulation {
 
         // Create room arrays
         room = new Cell[depth][height][width];
-        nextRoomValues = new double[depth][height][width];
-        for (int z = 0; z < depth; z++) {
-            for (int y = 0; y < height; y++) {
-                for (int x = 0; x < width; x++) {
-                    room[z][y][x] = roomPlan.getCellAt(new int3d(z,y,x));
+        for(int z = 0; z < depth; z++){
+            for(int y = 0; y < height; y++){
+                for(int x = 0; x < width; x++){
+                    room[z][y][x] = roomPlan.getCellAt(new int3d(z, y, x));
                 }
             }
         }
@@ -36,32 +34,53 @@ public class Simulation {
         return room[z][y][x];
     }
 
-    public int getDepth() {
+    public int getDepth(){
         return depth;
     }
-    public int getHeight() {
+
+    public int getHeight(){
         return height;
     }
-    public int getWidth() {
+
+    public int getWidth(){
         return width;
     }
 
     public void update(){
-        // Move simulation forward
-        for (int z = 0; z < depth; z++) {
-            for (int y = 0; y < height; y++) {
-                for (int x = 0; x < width; x++) {
-                    nextRoomValues[z][y][x] = room[z][y][x].getTemperature();
+        /*
+        Calculate heat flow between cells.
+
+        The method for that is called only once between two cells, and 'away' from simulation's origin.
+        The last page/column/row isn't being considered as it is not needed, the outside air cell has constant (or at
+        least not depending on the heat coming out of the room cells) temperature so the amount of heat flow
+        is irrelevant.
+
+        Second parameter is the distance between two cells, so for cells:
+         - sharing a side -> sqrt(1)
+         - sharing an edge -> sqrt(2)
+         - sharing a point -> sqrt(3)
+        */
+        for(int z = 0; z < depth - 1; z++){
+            for(int y = 0; y < height - 1; y++){
+                for(int x = 0; x < width - 1; x++){
+                    room[z][y][x].updateEnergyFlow(room[z + 1][y][x], 1);
+                    room[z][y][x].updateEnergyFlow(room[z][y + 1][x], 1);
+                    room[z][y][x].updateEnergyFlow(room[z][y][x + 1], 1);
+
+                    room[z][y][x].updateEnergyFlow(room[z + 1][y + 1][x], 1.414);
+                    room[z][y][x].updateEnergyFlow(room[z + 1][y][x + 1], 1.414);
+                    room[z][y][x].updateEnergyFlow(room[z][y + 1][x + 1], 1.414);
+
+                    room[z][y][x].updateEnergyFlow(room[z + 1][y + 1][x + 1], 1.732);
                 }
             }
         }
 
-
-        // Swap values
-        for (int z = 0; z < depth; z++) {
-            for (int y = 0; y < height; y++) {
-                for (int x = 0; x < width; x++) {
-                    room[z][y][x].setTemperature(nextRoomValues[z][y][x]);
+        // Apply changes
+        for(int z = 0; z < depth; z++){
+            for(int y = 0; y < height; y++){
+                for(int x = 0; x < width; x++){
+                    room[z][y][x].applyEnergyChange();
                 }
             }
         }
