@@ -1,9 +1,6 @@
 package base;
 
-import controlP5.ControlEvent;
-import controlP5.ControlFont;
-import controlP5.ControlP5;
-import controlP5.Toggle;
+import controlP5.*;
 import processing.core.PApplet;
 import processing.core.PFont;
 import simulation.RoomPlan;
@@ -14,14 +11,9 @@ import visualization.frame.LeftSideFrame;
 import visualization.frame.TopFrame;
 
 
-/*TODO:
-    - Take into account different surface areas of cells when the simulation has different x/y/z sizes.
- */
+public class Main extends PApplet{
 
-
-public class Main extends PApplet {
-
-    public static void main(String[] args) {
+    public static void main(String[] args){
         Main myMain = new Main();
         PApplet.runSketch(new String[]{"-- Processing --"}, myMain);
     }
@@ -37,13 +29,13 @@ public class Main extends PApplet {
 
 
     @Override
-    public void settings() {
+    public void settings(){
         size(WIDTH, HEIGHT);
 //        fullScreen();
     }
 
     @Override
-    public void setup() {
+    public void setup(){
         createGUI();
 
         simulation = new Simulation(new RoomPlan.Factory().build());
@@ -56,20 +48,23 @@ public class Main extends PApplet {
     }
 
     @Override
-    public void draw() {
+    public void draw(){
         background(0);
         surface.setTitle(String.valueOf(frameRate));
 
-        simulation.update();
+        if(!((Toggle) guiController.getController("pauseSimulation")).getState())
+            simulation.update();
 
-        frontFrame.draw();
-        topFrame.draw();
-        leftSideFrame.draw();
+        if(!((Toggle) guiController.getController("pauseDrawingFrames")).getState()){
+            frontFrame.draw();
+            topFrame.draw();
+            leftSideFrame.draw();
+        }
     }
 
     @Override
-    public void keyPressed() {
-        switch (key) {
+    public void keyPressed(){
+        switch(key){
             case 'q':
                 topFrame.moveIn();
                 break;
@@ -88,17 +83,20 @@ public class Main extends PApplet {
             case 'd':
                 leftSideFrame.moveIn();
                 break;
-            case 'r':
-                simulation.reset();
-                break;
             case 'm':
                 ((Toggle) guiController.getController("mode")).toggle();
                 break;
             case 'g':
                 ((Toggle) guiController.getController("grid")).toggle();
                 break;
+            case 't':
+                ((Toggle) guiController.getController("translucent")).toggle();
+                break;
+            case 'P':
+                ((Toggle) guiController.getController("pauseDrawingFrames")).toggle();
+                break;
             case 'p':
-                ((Toggle) guiController.getController("pause")).toggle();
+                ((Toggle) guiController.getController("pauseSimulation")).toggle();
                 break;
             case 'o':
                 ((Toggle) guiController.getController("outlines")).toggle();
@@ -106,7 +104,7 @@ public class Main extends PApplet {
         }
     }
 
-    private void createGUI() {
+    private void createGUI(){
         guiController = new ControlP5(this);
 
         PFont pfont = createFont("DejaVu Sans Mono", 12, true);
@@ -115,15 +113,25 @@ public class Main extends PApplet {
         guiController.addLabel("Options:")
                 .setPosition(16, 16);
 
-        Toggle pauseToggle = guiController.addToggle("pause")
+        Toggle pauseDrawingFramesToggle = guiController.addToggle("pauseDrawingFrames")
                 .setPosition(16, 46)
                 .setSize(20, 20)
-                .setValue(false)
-                .addListener(this::pauseDrawing);
-        pauseToggle
+                .setValue(false);
+        pauseDrawingFramesToggle
                 .getCaptionLabel()
                 .toUpperCase(false)
-                .setText("(P)ause drawing")
+                .setText("[P]ause drawing Frames")
+                .align(ControlP5.RIGHT_OUTSIDE, ControlP5.CENTER)
+                .setPaddingX(6);
+
+        Toggle pauseSimulationToggle = guiController.addToggle("pauseSimulation")
+                .setPosition(216, 46)
+                .setSize(20, 20)
+                .setValue(false);
+        pauseSimulationToggle
+                .getCaptionLabel()
+                .toUpperCase(false)
+                .setText("[p]ause simulation")
                 .align(ControlP5.RIGHT_OUTSIDE, ControlP5.CENTER)
                 .setPaddingX(6);
 
@@ -134,7 +142,7 @@ public class Main extends PApplet {
         modeToggle
                 .getCaptionLabel()
                 .toUpperCase(false)
-                .setText("Frames' (M)ode - Show temperature / cell type")
+                .setText("Frames' [m]ode - Show temperature / cell type")
                 .align(ControlP5.RIGHT_OUTSIDE, ControlP5.CENTER)
                 .setPaddingX(6);
 
@@ -145,7 +153,7 @@ public class Main extends PApplet {
         outlinesToggle
                 .getCaptionLabel()
                 .toUpperCase(false)
-                .setText("Show frame (o)utlines")
+                .setText("Show frame [o]utlines")
                 .align(ControlP5.RIGHT_OUTSIDE, ControlP5.CENTER)
                 .setPaddingX(6);
 
@@ -156,7 +164,7 @@ public class Main extends PApplet {
         gridToggle
                 .getCaptionLabel()
                 .toUpperCase(false)
-                .setText("Show (g)rid")
+                .setText("Show [g]rid")
                 .align(ControlP5.RIGHT_OUTSIDE, ControlP5.CENTER)
                 .setPaddingX(6);
 
@@ -167,17 +175,11 @@ public class Main extends PApplet {
         translucentToggle
                 .getCaptionLabel()
                 .toUpperCase(false)
-                .setText("Translucent grid")
+                .setText("[t]ranslucent grid (Very costly)")
                 .align(ControlP5.RIGHT_OUTSIDE, ControlP5.CENTER)
                 .setPaddingX(6);
     }
 
     // =========================== ControlP5 GUI Listeners ===========================
-    private void pauseDrawing(ControlEvent controlEvent) {
-        if (((Toggle) controlEvent.getController()).getState())
-            noLoop();
-        else
-            loop();
-    }
 
 }
