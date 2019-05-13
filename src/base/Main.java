@@ -11,9 +11,9 @@ import visualization.frame.LeftSideFrame;
 import visualization.frame.TopFrame;
 
 
-public class Main extends PApplet {
+public class Main extends PApplet{
 
-    public static void main(String[] args) {
+    public static void main(String[] args){
         Main myMain = new Main();
         PApplet.runSketch(new String[]{"-- Processing --"}, myMain);
     }
@@ -29,13 +29,13 @@ public class Main extends PApplet {
 
 
     @Override
-    public void settings() {
+    public void settings(){
         size(WIDTH, HEIGHT);
 //        fullScreen();
     }
 
     @Override
-    public void setup() {
+    public void setup(){
         createGUI();
 
         simulation = new Simulation(new RoomPlan.Factory().build());
@@ -48,20 +48,26 @@ public class Main extends PApplet {
     }
 
     @Override
-    public void draw() {
+    public void draw(){
         background(0);
+
+        if(!((Toggle) guiController.getController("pauseSimulation")).getState()){
+            simulation.update();
+        }
+
+        if(!((Toggle) guiController.getController("pauseDrawingFrames")).getState()){
+            frontFrame.draw();
+            topFrame.draw();
+            leftSideFrame.draw();
+        }
+
+        //FPS counter
         surface.setTitle(String.valueOf(frameRate));
-
-        simulation.update();
-
-        frontFrame.draw();
-        topFrame.draw();
-        leftSideFrame.draw();
     }
 
     @Override
-    public void keyPressed() {
-        switch (key) {
+    public void keyPressed(){
+        switch(key){
             case 'q':
                 topFrame.moveIn();
                 break;
@@ -86,8 +92,14 @@ public class Main extends PApplet {
             case 'g':
                 ((Toggle) guiController.getController("grid")).toggle();
                 break;
+            case 't':
+                ((Toggle) guiController.getController("translucent")).toggle();
+                break;
+            case 'P':
+                ((Toggle) guiController.getController("pauseDrawingFrames")).toggle();
+                break;
             case 'p':
-                ((Toggle) guiController.getController("pause")).toggle();
+                ((Toggle) guiController.getController("pauseSimulation")).toggle();
                 break;
             case 'o':
                 ((Toggle) guiController.getController("outlines")).toggle();
@@ -95,7 +107,7 @@ public class Main extends PApplet {
         }
     }
 
-    private void createGUI() {
+    private void createGUI(){
         guiController = new ControlP5(this);
 
         PFont pfont = createFont("DejaVu Sans Mono", 12, true);
@@ -104,15 +116,25 @@ public class Main extends PApplet {
         guiController.addLabel("Options:")
                 .setPosition(16, 16);
 
-        Toggle pauseToggle = guiController.addToggle("pause")
+        Toggle pauseDrawingFramesToggle = guiController.addToggle("pauseDrawingFrames")
                 .setPosition(16, 46)
                 .setSize(20, 20)
-                .setValue(false)
-                .addListener(this::pauseDrawing);
-        pauseToggle
+                .setValue(false);
+        pauseDrawingFramesToggle
                 .getCaptionLabel()
                 .toUpperCase(false)
-                .setText("(P)ause drawing")
+                .setText("[P]ause drawing Frames")
+                .align(ControlP5.RIGHT_OUTSIDE, ControlP5.CENTER)
+                .setPaddingX(6);
+
+        Toggle pauseSimulationToggle = guiController.addToggle("pauseSimulation")
+                .setPosition(216, 46)
+                .setSize(20, 20)
+                .setValue(false);
+        pauseSimulationToggle
+                .getCaptionLabel()
+                .toUpperCase(false)
+                .setText("[p]ause simulation")
                 .align(ControlP5.RIGHT_OUTSIDE, ControlP5.CENTER)
                 .setPaddingX(6);
 
@@ -123,7 +145,7 @@ public class Main extends PApplet {
         modeToggle
                 .getCaptionLabel()
                 .toUpperCase(false)
-                .setText("Frames' (M)ode - Show temperature / cell type")
+                .setText("Frames' [m]ode - Show temperature / cell type")
                 .align(ControlP5.RIGHT_OUTSIDE, ControlP5.CENTER)
                 .setPaddingX(6);
 
@@ -134,7 +156,7 @@ public class Main extends PApplet {
         outlinesToggle
                 .getCaptionLabel()
                 .toUpperCase(false)
-                .setText("Show frame (o)utlines")
+                .setText("Show frame [o]utlines")
                 .align(ControlP5.RIGHT_OUTSIDE, ControlP5.CENTER)
                 .setPaddingX(6);
 
@@ -145,7 +167,7 @@ public class Main extends PApplet {
         gridToggle
                 .getCaptionLabel()
                 .toUpperCase(false)
-                .setText("Show (g)rid")
+                .setText("Show [g]rid")
                 .align(ControlP5.RIGHT_OUTSIDE, ControlP5.CENTER)
                 .setPaddingX(6);
 
@@ -156,17 +178,41 @@ public class Main extends PApplet {
         translucentToggle
                 .getCaptionLabel()
                 .toUpperCase(false)
-                .setText("Translucent grid")
+                .setText("[t]ranslucent grid (Very costly)")
+                .align(ControlP5.RIGHT_OUTSIDE, ControlP5.CENTER)
+                .setPaddingX(6);
+
+        Slider timeStepSlider = guiController.addSlider("timeStep")
+                .setRange(0, 300)
+                .setValue(60)
+                .setPosition(16, 246)
+                .setSize(160, 20)
+                .setNumberOfTickMarks(31) //Every 10s: (300-0)/10 + 1
+                .showTickMarks(false)
+                .snapToTickMarks(true);
+        timeStepSlider
+                .getCaptionLabel()
+                .toUpperCase(false)
+                .setText("Time Step (in seconds)")
+                .align(ControlP5.RIGHT_OUTSIDE, ControlP5.CENTER)
+                .setPaddingX(6);
+
+        Slider heaterOutputPowerSlider = guiController.addSlider("heaterOutputPower")
+                .setRange(0, 2000)
+                .setValue(800)
+                .setPosition(16, 286)
+                .setSize(160, 20)
+                .setNumberOfTickMarks(41) //Every 50W: (2000-0)/50 + 1
+                .showTickMarks(false)
+                .snapToTickMarks(true);
+        heaterOutputPowerSlider
+                .getCaptionLabel()
+                .toUpperCase(false)
+                .setText("Heater output power (in watts)")
                 .align(ControlP5.RIGHT_OUTSIDE, ControlP5.CENTER)
                 .setPaddingX(6);
     }
 
     // =========================== ControlP5 GUI Listeners ===========================
-    private void pauseDrawing(ControlEvent controlEvent) {
-        if (((Toggle) controlEvent.getController()).getState())
-            noLoop();
-        else
-            loop();
-    }
 
 }
