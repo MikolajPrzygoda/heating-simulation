@@ -49,15 +49,15 @@ public class LeftSideFrame extends Frame {
         canvas.fill(255);
         canvas.rectMode(PConstants.CENTER);
 
-        canvas.rect(width / 2, height - padding / 2, plotWidth, depthIndicatorWidth);
+        canvas.rect(width / 2, height - padding / 2, plotWidth - 2 * padding, depthIndicatorWidth);
 
-        float knobX = PApplet.map(currentDepth, 0, maxDepth - 1, padding, width - padding);
+        float knobX = PApplet.map(currentDepth, 0, maxDepth - 1, 2 * padding, width - 2 * padding);
         canvas.fill(depthIndicatorKnobColor);
         canvas.rect(knobX, height - padding / 2, depthIndicatorKnobHeight, depthIndicatorKnobWidth);
 
         canvas.fill(255);
-        canvas.text(0, padding / 2, height - padding / 2 + textHeight / 2 - 2);
-        canvas.text(maxDepth, width - padding / 2, height - padding / 2 + textHeight / 2 - 2);
+        canvas.text(0, padding * 1.5f, height - padding / 2 + textHeight / 2 - 2);
+        canvas.text(maxDepth, width - padding * 1.5f, height - padding / 2 + textHeight / 2 - 2);
 
         canvas.rectMode(PConstants.CORNER);
     }
@@ -77,7 +77,7 @@ public class LeftSideFrame extends Frame {
     }
 
     @Override
-    public Cell getCellAt(int u, int v){
+    public Cell getCellAt(int u, int v) {
         return null;
     }
 }

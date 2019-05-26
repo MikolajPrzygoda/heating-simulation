@@ -49,15 +49,15 @@ public class TopFrame extends Frame {
         canvas.fill(255);
         canvas.rectMode(PConstants.CENTER);
 
-        canvas.rect(width - padding / 2, height / 2, depthIndicatorWidth, plotHeight);
+        canvas.rect(width - padding / 2, height / 2, depthIndicatorWidth, plotHeight - 2 * padding);
 
-        float knobY = PApplet.map(currentDepth, 0, maxDepth - 1, padding, height - padding);
+        float knobY = PApplet.map(currentDepth, 0, maxDepth - 1, 2 * padding, height - 2 * padding);
         canvas.fill(depthIndicatorKnobColor);
         canvas.rect(width - padding / 2, knobY, depthIndicatorKnobWidth, depthIndicatorKnobHeight);
 
         canvas.fill(255);
-        canvas.text(0, width - padding / 2, padding - 6);
-        canvas.text(maxDepth, width - padding / 2, height - padding + textHeight + 4);
+        canvas.text(0, width - padding / 2, 2 * padding - 6);
+        canvas.text(maxDepth, width - padding / 2, height - 2 * padding + textHeight + 4);
 
         canvas.rectMode(PConstants.CORNER);
     }
@@ -77,7 +77,7 @@ public class TopFrame extends Frame {
     }
 
     @Override
-    public Cell getCellAt(int u, int v){
+    public Cell getCellAt(int u, int v) {
         return null;
     }
 }
