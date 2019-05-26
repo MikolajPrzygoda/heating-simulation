@@ -6,6 +6,7 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 import simulation.Simulation;
 import simulation.cell.Cell;
+import visualization.pallete.IronbowPalette;
 
 public class LeftSideFrame extends Frame {
 
@@ -30,7 +31,7 @@ public class LeftSideFrame extends Frame {
                 if (((Toggle) main.guiController.getController("mode")).getState())
                     plot[y][nPages - 1 - z] = simulation.getCell(z, y, x).getTypeColor();
                 else
-                    plot[y][nPages - 1 - z] = temp2color(simulation.getCell(z, y, x).getTemperature(), min, max);
+                    plot[y][nPages - 1 - z] = IronbowPalette.getColor(simulation.getCell(z, y, x).getTemperature(), min, max);
             }
         }
     }

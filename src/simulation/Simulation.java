@@ -110,45 +110,34 @@ public class Simulation{
     }
 
     public double getMinValue(){
-//        double result = Double.POSITIVE_INFINITY;
-//
-//        for(int z = 0; z < depth; z++){
-//            for(int y = 0; y < height; y++){
-//                for(int x = 0; x < width; x++){
-//                    if(room[z][y][x].getTemperature() < result)
-//                        result = room[z][y][x].getTemperature();
-//                }
-//            }
-//        }
-//
-//        if(result < 0 || result > 1000){
-//            System.out.println("WUT " + result);
-//        }
-//
-//        return result;
+        double result = Double.POSITIVE_INFINITY;
 
-        return 0;
+        for (int z = 0; z < depth; z++) {
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    if (room[z][y][x].getTemperature() < result)
+                        result = room[z][y][x].getTemperature();
+                }
+            }
+        }
+
+        return result - 1;
     }
 
     public double getMaxValue(){
-//        double result = Double.NEGATIVE_INFINITY;
-//
-//        for(int z = 0; z < depth; z++){
-//            for(int y = 0; y < height; y++){
-//                for(int x = 0; x < width; x++){
-//                    if(room[z][y][x].getTemperature() > result)
-//                        result = room[z][y][x].getTemperature();
-//                }
-//            }
-//        }
-//
-//        if(result < 0 || result > 1000){
-//            System.out.println("WUT " + result);
-//        }
-//
-//        return result;
+        double result = Double.NEGATIVE_INFINITY;
 
-        return 30;
+        for (int z = 0; z < depth; z++) {
+            for (int y = 0; y < height; y++) {
+
+                for (int x = 0; x < width; x++) {
+                    if (room[z][y][x].getTemperature() > result)
+                        result = room[z][y][x].getTemperature();
+                }
+            }
+        }
+
+        return result + 1;
     }
 
     public void changeHeaterPower(double heaterPower){

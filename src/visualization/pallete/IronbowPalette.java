@@ -1,0 +1,147 @@
+package visualization.pallete;
+
+import processing.core.PApplet;
+import util.Color;
+
+public final class IronbowPalette {
+
+    private static int[] colors = new int[]{
+            Color.fromRGBA(0, 0, 0, 255),
+            Color.fromRGBA(0, 0, 36, 255),
+            Color.fromRGBA(0, 0, 51, 255),
+            Color.fromRGBA(0, 0, 66, 255),
+            Color.fromRGBA(0, 0, 81, 255),
+            Color.fromRGBA(2, 0, 90, 255),
+            Color.fromRGBA(4, 0, 99, 255),
+            Color.fromRGBA(7, 0, 106, 255),
+            Color.fromRGBA(11, 0, 115, 255),
+            Color.fromRGBA(14, 0, 119, 255),
+            Color.fromRGBA(20, 0, 123, 255),
+            Color.fromRGBA(27, 0, 128, 255),
+            Color.fromRGBA(33, 0, 133, 255),
+            Color.fromRGBA(41, 0, 137, 255),
+            Color.fromRGBA(48, 0, 140, 255),
+            Color.fromRGBA(55, 0, 143, 255),
+            Color.fromRGBA(61, 0, 146, 255),
+            Color.fromRGBA(66, 0, 149, 255),
+            Color.fromRGBA(72, 0, 150, 255),
+            Color.fromRGBA(78, 0, 151, 255),
+            Color.fromRGBA(84, 0, 152, 255),
+            Color.fromRGBA(91, 0, 153, 255),
+            Color.fromRGBA(97, 0, 155, 255),
+            Color.fromRGBA(104, 0, 155, 255),
+            Color.fromRGBA(110, 0, 156, 255),
+            Color.fromRGBA(115, 0, 157, 255),
+            Color.fromRGBA(122, 0, 157, 255),
+            Color.fromRGBA(128, 0, 157, 255),
+            Color.fromRGBA(134, 0, 157, 255),
+            Color.fromRGBA(139, 0, 156, 255),
+            Color.fromRGBA(146, 0, 155, 255),
+            Color.fromRGBA(152, 0, 155, 255),
+            Color.fromRGBA(157, 0, 155, 255),
+            Color.fromRGBA(162, 0, 154, 255),
+            Color.fromRGBA(167, 0, 153, 255),
+            Color.fromRGBA(171, 0, 152, 255),
+            Color.fromRGBA(175, 1, 151, 255),
+            Color.fromRGBA(178, 1, 150, 255),
+            Color.fromRGBA(182, 2, 149, 255),
+            Color.fromRGBA(185, 4, 148, 255),
+            Color.fromRGBA(188, 5, 146, 255),
+            Color.fromRGBA(191, 6, 145, 255),
+            Color.fromRGBA(193, 8, 143, 255),
+            Color.fromRGBA(195, 11, 141, 255),
+            Color.fromRGBA(198, 13, 138, 255),
+            Color.fromRGBA(201, 17, 134, 255),
+            Color.fromRGBA(203, 20, 131, 255),
+            Color.fromRGBA(206, 23, 126, 255),
+            Color.fromRGBA(208, 26, 120, 255),
+            Color.fromRGBA(210, 29, 115, 255),
+            Color.fromRGBA(212, 33, 110, 255),
+            Color.fromRGBA(214, 37, 102, 255),
+            Color.fromRGBA(217, 41, 96, 255),
+            Color.fromRGBA(219, 46, 88, 255),
+            Color.fromRGBA(221, 49, 77, 255),
+            Color.fromRGBA(223, 53, 65, 255),
+            Color.fromRGBA(224, 56, 53, 255),
+            Color.fromRGBA(226, 60, 41, 255),
+            Color.fromRGBA(228, 64, 29, 255),
+            Color.fromRGBA(229, 68, 24, 255),
+            Color.fromRGBA(231, 72, 19, 255),
+            Color.fromRGBA(232, 76, 15, 255),
+            Color.fromRGBA(234, 78, 11, 255),
+            Color.fromRGBA(235, 82, 9, 255),
+            Color.fromRGBA(236, 86, 7, 255),
+            Color.fromRGBA(237, 90, 6, 255),
+            Color.fromRGBA(238, 93, 4, 255),
+            Color.fromRGBA(239, 96, 3, 255),
+            Color.fromRGBA(240, 100, 3, 255),
+            Color.fromRGBA(241, 103, 2, 255),
+            Color.fromRGBA(241, 106, 1, 255),
+            Color.fromRGBA(242, 109, 1, 255),
+            Color.fromRGBA(243, 113, 0, 255),
+            Color.fromRGBA(244, 116, 0, 255),
+            Color.fromRGBA(244, 120, 0, 255),
+            Color.fromRGBA(245, 125, 0, 255),
+            Color.fromRGBA(246, 129, 0, 255),
+            Color.fromRGBA(247, 133, 0, 255),
+            Color.fromRGBA(248, 136, 0, 255),
+            Color.fromRGBA(248, 139, 0, 255),
+            Color.fromRGBA(249, 142, 0, 255),
+            Color.fromRGBA(249, 145, 0, 255),
+            Color.fromRGBA(250, 149, 0, 255),
+            Color.fromRGBA(251, 154, 0, 255),
+            Color.fromRGBA(252, 159, 0, 255),
+            Color.fromRGBA(253, 163, 0, 255),
+            Color.fromRGBA(253, 168, 0, 255),
+            Color.fromRGBA(253, 172, 0, 255),
+            Color.fromRGBA(254, 176, 0, 255),
+            Color.fromRGBA(254, 179, 0, 255),
+            Color.fromRGBA(254, 184, 0, 255),
+            Color.fromRGBA(254, 187, 0, 255),
+            Color.fromRGBA(254, 191, 0, 255),
+            Color.fromRGBA(254, 195, 0, 255),
+            Color.fromRGBA(254, 199, 0, 255),
+            Color.fromRGBA(254, 202, 1, 255),
+            Color.fromRGBA(254, 205, 2, 255),
+            Color.fromRGBA(254, 208, 5, 255),
+            Color.fromRGBA(254, 212, 9, 255),
+            Color.fromRGBA(254, 216, 12, 255),
+            Color.fromRGBA(255, 219, 15, 255),
+            Color.fromRGBA(255, 221, 23, 255),
+            Color.fromRGBA(255, 224, 32, 255),
+            Color.fromRGBA(255, 227, 39, 255),
+            Color.fromRGBA(255, 229, 50, 255),
+            Color.fromRGBA(255, 232, 63, 255),
+            Color.fromRGBA(255, 235, 75, 255),
+            Color.fromRGBA(255, 238, 88, 255),
+            Color.fromRGBA(255, 239, 102, 255),
+            Color.fromRGBA(255, 241, 116, 255),
+            Color.fromRGBA(255, 242, 134, 255),
+            Color.fromRGBA(255, 244, 149, 255),
+            Color.fromRGBA(255, 245, 164, 255),
+            Color.fromRGBA(255, 247, 179, 255),
+            Color.fromRGBA(255, 248, 192, 255),
+            Color.fromRGBA(255, 249, 203, 255),
+            Color.fromRGBA(255, 251, 216, 255),
+            Color.fromRGBA(255, 253, 228, 255),
+            Color.fromRGBA(255, 254, 239, 255),
+            Color.fromRGBA(255, 255, 255, 255)
+    };
+
+    private IronbowPalette() {
+    }
+
+    public static int getColor(double val, double min, double max) {
+        if (val == min)
+            return colors[0];
+        if (val == max)
+            return colors[colors.length - 1];
+
+        //Get 'index as float'
+        float pos = PApplet.map((float) val, (float) min, (float) max, 0, colors.length - 1);
+        int index = (int) pos;
+
+        //Interpolate color using neighbouring colors in the table and pos decimal expansion as fraction
+        return Color.lerp(colors[index], colors[index + 1], pos - index);
+    }
+}

@@ -2,11 +2,11 @@ package visualization.frame;
 
 import base.Main;
 import controlP5.Toggle;
-import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PGraphics;
 import simulation.Simulation;
 import simulation.cell.Cell;
+import visualization.pallete.IronbowPalette;
 
 public abstract class Frame {
 
@@ -32,6 +32,8 @@ public abstract class Frame {
     protected int depthIndicatorKnobWidth = depthIndicatorWidth * 2;
     protected int depthIndicatorKnobHeight = 6;
     protected int depthIndicatorKnobColor = 100;
+
+    protected int colorScaleWidth = padding / 2;
 
 
     public Frame(int width, int height, int posX, int posY, Simulation simulation, Main main) {
@@ -81,8 +83,6 @@ public abstract class Frame {
         canvas.translate(-padding, -padding);
     }
 
-    protected abstract void drawDepthIndicator();
-
     public void draw() {
         canvas.beginDraw();
 
@@ -100,6 +100,9 @@ public abstract class Frame {
         //Depth Indicator
         drawDepthIndicator();
 
+        //Scale
+        drawColorScale();
+
         if (((Toggle) main.guiController.getController("outlines")).getState())
             drawFramesOutlines(
                     main.leftSideFrame.getCurrentDepth(),
@@ -115,6 +118,29 @@ public abstract class Frame {
 
     protected abstract void drawFramesOutlines(int xDepth, int yDepth, int zDepth);
 
+    protected abstract void drawDepthIndicator();
+
+    //By default draw the scale to the left of the plot
+    protected void drawColorScale() {
+        //Min-Max values
+        canvas.textSize(8);
+        String minString = (simulation.getMinValue() + "").substring(0, 4);
+        String maxString = (simulation.getMaxValue() + "").substring(0, 4);
+
+        canvas.text(minString, padding * 0.5f - 1, padding * 1.5f);
+        canvas.text(maxString, padding * 0.5f - 1, plotHeight + padding * 0.5f + 4);
+
+        canvas.textSize(12);
+
+        //Scale
+        //Start from 2*padding and for each pixel to plotHeight draw a 1-pixel high bar in appropriate color
+        for (int i = 2 * padding; i < plotHeight; i++) {
+            canvas.noStroke();
+            canvas.fill(IronbowPalette.getColor(i, 2 * padding, plotHeight));
+            canvas.rect(padding / 2 - colorScaleWidth / 2, i, colorScaleWidth, 1);
+        }
+    }
+
     public int getCurrentDepth() {
         return currentDepth;
     }
@@ -124,18 +150,11 @@ public abstract class Frame {
     }
 
     public void moveIn() {
-        this.currentDepth++;
-        currentDepth = currentDepth == maxDepth ? maxDepth - 1 : currentDepth;
+        currentDepth = currentDepth == maxDepth - 1 ? currentDepth : currentDepth + 1;
     }
 
     public void moveOut() {
-        currentDepth = currentDepth - 1 < 0 ? 0 : currentDepth - 1;
-    }
-
-    protected int temp2color(double value, double min, double max) {
-        int r = (int) PApplet.map((float) value, (float) min, (float) max, 0, 255);
-        int b = 255 - r;
-        return main.color(r, 0, b);
+        currentDepth = currentDepth == 0 ? currentDepth : currentDepth - 1;
     }
 
     public void setPadding(int padding) {
