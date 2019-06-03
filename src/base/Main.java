@@ -70,6 +70,23 @@ public class Main extends PApplet{
         ((Textlabel) guiController.getController("elapsedTime")).setText(
                 "Elapsed time: " + simulation.getElapsedTime() / 60 + "m"
         );
+
+        //Update cursor temp label
+        Cell cell;
+        if (mouseX < WIDTH / 2) {
+            cell = leftSideFrame.getCellAt(mouseX, mouseY);
+        }
+        else if (mouseY < HEIGHT / 2) {
+            cell = topFrame.getCellAt(mouseX - WIDTH / 2, mouseY);
+        }
+        else {
+            cell = frontFrame.getCellAt(mouseX - WIDTH / 2, mouseY - HEIGHT / 2);
+        }
+        double temp = cell == null ? Double.NEGATIVE_INFINITY : cell.getTemperature();
+
+        ((Textlabel) guiController.getController("cursorTemp")).setText(
+                "At cursor: " + (temp + "").substring(0, 4) + "°C"
+        );
     }
 
     @Override
@@ -146,6 +163,8 @@ public class Main extends PApplet{
                 .setPosition(416, 16);
         guiController.addLabel("elapsedTime")
                 .setPosition(416, 46);
+        guiController.addLabel("cursorTemp")
+                .setPosition(416, 76);
 
         Toggle pauseDrawingFramesToggle = guiController.addToggle("pauseDrawingFrames")
                 .setPosition(16, 46)
