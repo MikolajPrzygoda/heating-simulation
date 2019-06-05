@@ -3,7 +3,6 @@ package base;
 import controlP5.*;
 import processing.core.PApplet;
 import processing.core.PFont;
-import processing.event.MouseEvent;
 import simulation.RoomPlan;
 import simulation.Simulation;
 import simulation.cell.Cell;
@@ -113,6 +112,9 @@ public class Main extends PApplet{
             case 'm':
                 ((Toggle) guiController.getController("mode")).toggle();
                 break;
+            case 'n':
+                simulation.update();
+                break;
             case 'g':
                 ((Toggle) guiController.getController("grid")).toggle();
                 break;
@@ -128,25 +130,6 @@ public class Main extends PApplet{
             case 'o':
                 ((Toggle) guiController.getController("outlines")).toggle();
                 break;
-        }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent event){
-        Cell cell;
-
-        if(event.getX() < WIDTH / 2){
-            cell = leftSideFrame.getCellAt(event.getX(), event.getY() - HEIGHT / 2);
-        }
-        else if(event.getY() < HEIGHT / 2){
-            cell = topFrame.getCellAt(event.getX() - WIDTH / 2, event.getY());
-        }
-        else{
-            cell = frontFrame.getCellAt(event.getX() - WIDTH / 2, event.getY() - HEIGHT / 2);
-        }
-
-        if(cell != null){
-            System.out.println("Temp: " + cell.getTemperature());
         }
     }
 
@@ -228,7 +211,7 @@ public class Main extends PApplet{
         translucentToggle
                 .getCaptionLabel()
                 .toUpperCase(false)
-                .setText("[t]ranslucent grid (Very costly)")
+                .setText("[t]ranslucent grid (Hard on FPS)")
                 .align(ControlP5.RIGHT_OUTSIDE, ControlP5.CENTER)
                 .setPaddingX(6);
 

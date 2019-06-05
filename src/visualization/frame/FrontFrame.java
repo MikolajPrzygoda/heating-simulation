@@ -87,6 +87,7 @@ public class FrontFrame extends Frame {
             int y = (int) ((v - padding) / plotPixelHeight);
             int x = (int) ((u - padding) / plotPixelWidth);
 
+            System.out.println(z + " - " + y + " - " + x);
             return simulation.getCell(z, y, x);
         }
         return null;
