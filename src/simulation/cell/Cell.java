@@ -1,5 +1,7 @@
 package simulation.cell;
 
+import simulation.Simulation;
+
 public abstract class Cell{
 
     /**
@@ -44,6 +46,12 @@ public abstract class Cell{
      */
     protected double energyChange;
 
+    /**
+     * Calculations used to simulate air convection are done on temperature rather than energy (in [°C] instead of [J]),
+     * so there's different field for tracking that change.
+     */
+    protected double temperatureChange;
+
     public double getTemperature(){
         return temperature;
     }
@@ -52,12 +60,16 @@ public abstract class Cell{
         this.temperature = temperature;
     }
 
+    public double getTemperatureChange(){
+        return temperatureChange;
+    }
+
     public abstract int getTypeColor();
 
     /**
      * Formula for energy change: <br/>
      * dQ / dt = A * dT / (L/2 / k_this + L/2 / k_other) <br/><br/>
-     * <p>
+     *
      * Where: <br/>
      * dQ - Change of heat [J], <br/>
      * dt - Change of time - const in this model = 0.1[s] <br/>
@@ -65,7 +77,7 @@ public abstract class Cell{
      * dT - Difference of temperature [°C {or} K] <br/>
      * L  - Distance of heat transfer [m] <br/>
      * k  - Heat conductivity of specific material [W / (m * K)] <br/><br/>
-     * <p>
+     *
      * The above formula is already modified for when we want to consider heat flow through two different materials,
      * so in the case of room heating simulation, we model heat exchange between two cells as flow through half the
      * cell in the first cell's material and through half of the other cell (with different material -> heat conductivity).
@@ -77,14 +89,49 @@ public abstract class Cell{
         // Positive dQ means that heat flows: this->other, because of the way dT is calculated.
         double dQ = timeStep * CELL_AREA * dT / (dist / 2 / this.heatConductivity + dist / 2 / other.heatConductivity);
 
+        // If it's a transfer between heater and air, boost it :')
+        if(this instanceof HeaterCell && other instanceof AirCell || this instanceof AirCell && other instanceof HeaterCell){
+            dQ *= 50;
+        }
+
         this.energyChange -= dQ;
         other.energyChange += dQ;
+    }
+
+    /**
+     * Function used to calculate the amount of heat given to other cells in convective heat transfer. <br />
+     * More information here: {@link Simulation#update()} <i>(point 2)</i>
+     *
+     * @param other    Cell to which try to give up heat to
+     * @param ratio    Ratio of the temperature difference to send to the other cell
+     * @param dist     Distance between cells
+     * @param timeStep Amount of seconds between two simulation states.
+     */
+    public void updateConvectiveEnergyFlow(Cell other, double ratio, double dist, int timeStep){
+        if(this instanceof AirCell && other instanceof AirCell){
+            double temperatureDiff = this.temperature - other.temperature;
+
+            // Allow only giving heat to the other cell.
+            if(temperatureDiff > 0){
+                // 20 - maximum timeStep (NOTE: should reconsider this).
+                double dT = (temperatureDiff * ratio * (timeStep / 20f)) / dist;
+
+                this.temperatureChange -= dT;
+                other.temperatureChange += dT;
+            }
+        }
     }
 
     public void applyEnergyChange(double timeStep){
         this.temperature += energyChange / heatCapacity;
         this.energyChange = 0;
     }
+
+    public void applyTemperatureChange(){
+        this.temperature += temperatureChange;
+        this.temperatureChange = 0;
+    }
+
 
     protected static class CellParameters{
 

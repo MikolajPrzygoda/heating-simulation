@@ -81,39 +81,109 @@ public class Simulation{
         return elapsedTime;
     }
 
+    /**
+     * <h3>Calculate heat flow between cells.</h3>
+     * There are two phases:<br />
+     * <ol>
+     * <li>
+     * Heat conduction between two neighbouring cells: <br />
+     * The method for that is called only once between two cells, and 'away' from simulation's origin. <br />
+     * The last page/column/row isn't being considered as it is not needed, the outside air cell has constant<br />
+     * (or at least not depending on the heat coming out of the room cells) temperature so the amount of heat<br />
+     * flow is irrelevant.<br />
+     * Second parameter is the distance between two cells, so for cells:
+     * <ul>
+     * <li>sharing a side -> sqrt(1)</li>
+     * <li>sharing an edge -> sqrt(2)</li>
+     * <li>sharing a point -> sqrt(3)</li>
+     * </ul>
+     * </li>
+     * <li>
+     * Heat convection between two AirCells mainly in the upwards direction. <br />
+     * This transfer happens only between AirCells, and works separate from conventional heat transfer. <br />
+     * Firstly, calculates the energy flow in the upward direction, if there little to none, then transfer <br />
+     * heat sideways. <br />
+     * The ratio of how much heat difference is supposed to go to other cells is calculated to be roughly 80%, <br />
+     * so if the heat goes upwards, each cell should get 0.8/9 = 8% of the temperature difference. After that <br />
+     * the flow is further decreased by the distance between cells, similar to the heat transfer <br />
+     * via conduction.
+     * </li>
+     * </ol>
+     */
     public void update(){
 
-        The method for that is called only once between two cells, and 'away' from simulation's origin.
-        The last page/column/row isn't being considered as it is not needed, the outside air cell has constant (or at
-        least not depending on the heat coming out of the room cells) temperature so the amount of heat flow
-        is irrelevant.
-
-        Second parameter is the distance between two cells, so for cells:
-         - sharing a side -> sqrt(1)
-         - sharing an edge -> sqrt(2)
-         - sharing a point -> sqrt(3)
-        */
+        // First phase: hear conduction
         for(int z = 0; z < depth - 1; z++){
             for(int y = 0; y < height - 1; y++){
                 for(int x = 0; x < width - 1; x++){
-                    room[z][y][x].updateEnergyFlow(room[z + 1][y][x], 1, timeStep);
-                    room[z][y][x].updateEnergyFlow(room[z][y + 1][x], 1, timeStep);
-                    room[z][y][x].updateEnergyFlow(room[z][y][x + 1], 1, timeStep);
+                    Cell currentCell = room[z][y][x];
 
-                    room[z][y][x].updateEnergyFlow(room[z + 1][y + 1][x], 1.414, timeStep);
-                    room[z][y][x].updateEnergyFlow(room[z + 1][y][x + 1], 1.414, timeStep);
-                    room[z][y][x].updateEnergyFlow(room[z][y + 1][x + 1], 1.414, timeStep);
+                    currentCell.updateEnergyFlow(room[z + 1][y][x], 1, timeStep);
+                    currentCell.updateEnergyFlow(room[z][y + 1][x], 1, timeStep);
+                    currentCell.updateEnergyFlow(room[z][y][x + 1], 1, timeStep);
 
-                    room[z][y][x].updateEnergyFlow(room[z + 1][y + 1][x + 1], 1.732, timeStep);
+                    currentCell.updateEnergyFlow(room[z + 1][y + 1][x], 1.414, timeStep);
+                    currentCell.updateEnergyFlow(room[z + 1][y][x + 1], 1.414, timeStep);
+                    currentCell.updateEnergyFlow(room[z][y + 1][x + 1], 1.414, timeStep);
+
+                    currentCell.updateEnergyFlow(room[z + 1][y + 1][x + 1], 1.732, timeStep);
                 }
             }
         }
 
-        //Apply changes
+        //Apply conduction changes
         for(int z = 0; z < depth; z++){
             for(int y = 0; y < height; y++){
                 for(int x = 0; x < width; x++){
                     room[z][y][x].applyEnergyChange(timeStep);
+                }
+            }
+        }
+
+        // Second phase of heat transfer: air convection.
+        for(int z = roomAirStart.z; z < roomAirEnd.z; z++){
+            for(int y = roomAirStart.y; y < roomAirEnd.y; y++){
+                for(int x = roomAirStart.x; x < roomAirEnd.x; x++){
+                    Cell currentCell = room[z][y][x];
+
+                    if(z == 8 && y == 14 && x == 17){
+                        System.out.println("dupa");
+                    }
+
+                    // Calculate the change to the cells above (point (0,0,0) is on the top of the room, so y-1 == up).
+                    currentCell.updateConvectiveEnergyFlow(room[z][y - 1][x], 0.08, 1, timeStep);
+                    currentCell.updateConvectiveEnergyFlow(room[z][y - 1][x + 1], 0.08, 1.41, timeStep);
+                    currentCell.updateConvectiveEnergyFlow(room[z][y - 1][x - 1], 0.08, 1.41, timeStep);
+                    currentCell.updateConvectiveEnergyFlow(room[z + 1][y - 1][x], 0.08, 1.41, timeStep);
+                    currentCell.updateConvectiveEnergyFlow(room[z - 1][y - 1][x], 0.08, 1.41, timeStep);
+                    currentCell.updateConvectiveEnergyFlow(room[z + 1][y - 1][x + 1], 0.08, 1.73, timeStep);
+                    currentCell.updateConvectiveEnergyFlow(room[z + 1][y - 1][x - 1], 0.08, 1.73, timeStep);
+                    currentCell.updateConvectiveEnergyFlow(room[z - 1][y - 1][x + 1], 0.08, 1.73, timeStep);
+                    currentCell.updateConvectiveEnergyFlow(room[z - 1][y - 1][x - 1], 0.08, 1.73, timeStep);
+
+                    // Now consider cells to the sides. If the temperature change of current cell is less that 10%
+                    // of it's current temperature (the case when air above this cell is on the similar temperature
+                    // level as currentCell, so the air will flow to the sides instead of upwards) send more to the
+                    // sides than usually.
+                    double sidewaysRatio =
+                            currentCell.getTemperatureChange() < currentCell.getTemperature() * 0.1 ? 0.08 : 0.04;
+                    currentCell.updateConvectiveEnergyFlow(room[z][y][x + 1], sidewaysRatio, 1, timeStep);
+                    currentCell.updateConvectiveEnergyFlow(room[z][y][x - 1], sidewaysRatio, 1, timeStep);
+                    currentCell.updateConvectiveEnergyFlow(room[z + 1][y][x], sidewaysRatio, 1, timeStep);
+                    currentCell.updateConvectiveEnergyFlow(room[z - 1][y][x], sidewaysRatio, 1, timeStep);
+                    currentCell.updateConvectiveEnergyFlow(room[z + 1][y][x + 1], sidewaysRatio, 1.41, timeStep);
+                    currentCell.updateConvectiveEnergyFlow(room[z + 1][y][x - 1], sidewaysRatio, 1.41, timeStep);
+                    currentCell.updateConvectiveEnergyFlow(room[z - 1][y][x + 1], sidewaysRatio, 1.41, timeStep);
+                    currentCell.updateConvectiveEnergyFlow(room[z - 1][y][x - 1], sidewaysRatio, 1.41, timeStep);
+                }
+            }
+        }
+
+        //Apply convection changes
+        for(int z = 0; z < depth; z++){
+            for(int y = 0; y < height; y++){
+                for(int x = 0; x < width; x++){
+                    room[z][y][x].applyTemperatureChange();
                 }
             }
         }
