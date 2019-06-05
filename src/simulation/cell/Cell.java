@@ -11,10 +11,12 @@ public abstract class Cell{
     protected static final double CELL_AREA = CELL_SIZE * CELL_SIZE;
     protected static final double CELL_VOLUME = CELL_SIZE * CELL_SIZE * CELL_SIZE;
 
+    public static final double INITIAL_TEMPERATURE = 12;
+
     /**
      * Current cell's temperature measured in [°C].
      */
-    protected double temperature = 12; //[deg C]
+    protected double temperature = INITIAL_TEMPERATURE; //[deg C]
 
     /**
      * Mass of the material of the cube, calculated based on cube's volume and density, in [kg].

@@ -1,7 +1,9 @@
 package simulation;
 
+import simulation.cell.AirCell;
 import simulation.cell.Cell;
 import simulation.cell.HeaterCell;
+import simulation.scenario.Scenario;
 import util.int3d;
 
 import java.util.ArrayList;
@@ -15,16 +17,21 @@ public class Simulation{
     private int width;
     private int timeStep = 5;
     private int elapsedTime = 0;
+    private int usedEnergy = 0;
+    private int currentPower = 0;
     private List<HeaterCell> heaterCells = new ArrayList<>();
 
     private int3d roomAirStart;
     private int3d roomAirEnd;
+
+    public Scenario scenario = null;
 
     public Simulation(RoomPlan roomPlan){
 
         this.depth = roomPlan.getRoomDepth();
         this.height = roomPlan.getRoomHeight();
         this.width = roomPlan.getRoomWidth();
+
 
         // Save information about the position of all the air inside the room
         roomAirStart = new int3d(
@@ -79,6 +86,28 @@ public class Simulation{
 
     public int getElapsedTime(){
         return elapsedTime;
+    }
+
+    public void setElapsedTime(int elapsedTime){
+        this.elapsedTime = elapsedTime;
+    }
+
+    public int getUsedEnergy(){
+        return usedEnergy;
+    }
+
+    public void setUsedEnergy(int energy){
+        this.usedEnergy = energy;
+    }
+
+    public void reset(){
+        for(int z = 0; z < depth - 1; z++){
+            for(int y = 0; y < height - 1; y++){
+                for(int x = 0; x < width - 1; x++){
+                    room[z][y][x].setTemperature(Cell.INITIAL_TEMPERATURE);
+                }
+            }
+        }
     }
 
     /**
@@ -146,10 +175,6 @@ public class Simulation{
                 for(int x = roomAirStart.x; x < roomAirEnd.x; x++){
                     Cell currentCell = room[z][y][x];
 
-                    if(z == 8 && y == 14 && x == 17){
-                        System.out.println("dupa");
-                    }
-
                     // Calculate the change to the cells above (point (0,0,0) is on the top of the room, so y-1 == up).
                     currentCell.updateConvectiveEnergyFlow(room[z][y - 1][x], 0.08, 1, timeStep);
                     currentCell.updateConvectiveEnergyFlow(room[z][y - 1][x + 1], 0.08, 1.41, timeStep);
@@ -166,7 +191,7 @@ public class Simulation{
                     // level as currentCell, so the air will flow to the sides instead of upwards) send more to the
                     // sides than usually.
                     double sidewaysRatio =
-                            currentCell.getTemperatureChange() < currentCell.getTemperature() * 0.1 ? 0.08 : 0.04;
+                            currentCell.getTemperatureChange() < currentCell.getTemperature() * 0.1 ? 0.1 : 0.04;
                     currentCell.updateConvectiveEnergyFlow(room[z][y][x + 1], sidewaysRatio, 1, timeStep);
                     currentCell.updateConvectiveEnergyFlow(room[z][y][x - 1], sidewaysRatio, 1, timeStep);
                     currentCell.updateConvectiveEnergyFlow(room[z + 1][y][x], sidewaysRatio, 1, timeStep);
@@ -188,8 +213,9 @@ public class Simulation{
             }
         }
 
-        //Increase time elapsed since the start of simulation
-        elapsedTime += timeStep;
+        //Increase time elapsed and energy used
+        this.elapsedTime += timeStep;
+        this.usedEnergy += this.currentPower * timeStep;
     }
 
     public double getMinValue(){
@@ -223,8 +249,27 @@ public class Simulation{
         return result + 1;
     }
 
-    public void changeHeaterPower(double heaterPower){
+    public void changeHeaterPower(int heaterPower){
+        this.currentPower = heaterPower;
         double cellsPower = heaterPower / heaterCells.size();
         heaterCells.forEach(cell -> cell.setPowerOutput(cellsPower));
+    }
+
+    public double getAverageTemperature(){
+        double sum = 0;
+        int count = 0;
+
+        for(int z = roomAirStart.z; z < roomAirEnd.z; z++){
+            for(int y = roomAirStart.y; y < roomAirEnd.y; y++){
+                for(int x = roomAirStart.x; x < roomAirEnd.x; x++){
+                    if(room[z][y][x] instanceof AirCell){
+                        count++;
+                        sum += room[z][y][x].getTemperature();
+                    }
+                }
+            }
+        }
+
+        return sum / count;
     }
 }
