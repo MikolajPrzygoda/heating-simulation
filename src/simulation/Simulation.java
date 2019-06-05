@@ -17,11 +17,26 @@ public class Simulation{
     private int elapsedTime = 0;
     private List<HeaterCell> heaterCells = new ArrayList<>();
 
+    private int3d roomAirStart;
+    private int3d roomAirEnd;
+
     public Simulation(RoomPlan roomPlan){
 
         this.depth = roomPlan.getRoomDepth();
         this.height = roomPlan.getRoomHeight();
         this.width = roomPlan.getRoomWidth();
+
+        // Save information about the position of all the air inside the room
+        roomAirStart = new int3d(
+                1 + roomPlan.getWallThickness(),
+                1 + roomPlan.getWallThickness(),
+                1 + roomPlan.getWallThickness()
+        );
+        roomAirEnd = new int3d(
+                roomPlan.getRoomDepth() - (1 + roomPlan.getWallThickness()),
+                roomPlan.getRoomHeight() - (1 + roomPlan.getWallThickness()),
+                roomPlan.getRoomWidth() - (1 + roomPlan.getWallThickness())
+        );
 
         // Create room arrays
         room = new Cell[depth][height][width];
@@ -67,8 +82,6 @@ public class Simulation{
     }
 
     public void update(){
-        /*
-        Calculate heat flow between cells.
 
         The method for that is called only once between two cells, and 'away' from simulation's origin.
         The last page/column/row isn't being considered as it is not needed, the outside air cell has constant (or at
@@ -112,10 +125,10 @@ public class Simulation{
     public double getMinValue(){
         double result = Double.POSITIVE_INFINITY;
 
-        for (int z = 0; z < depth; z++) {
-            for (int y = 0; y < height; y++) {
-                for (int x = 0; x < width; x++) {
-                    if (room[z][y][x].getTemperature() < result)
+        for(int z = 0; z < depth; z++){
+            for(int y = 0; y < height; y++){
+                for(int x = 0; x < width; x++){
+                    if(room[z][y][x].getTemperature() < result)
                         result = room[z][y][x].getTemperature();
                 }
             }
@@ -127,11 +140,11 @@ public class Simulation{
     public double getMaxValue(){
         double result = Double.NEGATIVE_INFINITY;
 
-        for (int z = 0; z < depth; z++) {
-            for (int y = 0; y < height; y++) {
+        for(int z = 0; z < depth; z++){
+            for(int y = 0; y < height; y++){
 
-                for (int x = 0; x < width; x++) {
-                    if (room[z][y][x].getTemperature() > result)
+                for(int x = 0; x < width; x++){
+                    if(room[z][y][x].getTemperature() > result)
                         result = room[z][y][x].getTemperature();
                 }
             }
