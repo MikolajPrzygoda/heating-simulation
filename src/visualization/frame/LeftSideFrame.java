@@ -79,6 +79,13 @@ public class LeftSideFrame extends Frame {
 
     @Override
     public Cell getCellAt(int u, int v) {
+        if(u > padding && u < width - padding && v > padding && v < height - padding){
+            int z = nPages - 1 - (int) ((u - padding) / plotPixelWidth);
+            int y = (int) ((v - padding) / plotPixelHeight);
+            int x = currentDepth;
+
+            return simulation.getCell(z, y, x);
+        }
         return null;
     }
 }

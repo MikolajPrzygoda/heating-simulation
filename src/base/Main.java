@@ -88,7 +88,7 @@ public class Main extends PApplet{
         // Update cursor temp label
         Cell cell;
         if(mouseX < WIDTH / 2){
-            cell = leftSideFrame.getCellAt(mouseX, mouseY);
+            cell = leftSideFrame.getCellAt(mouseX, mouseY - HEIGHT / 2);
         }
         else if(mouseY < HEIGHT / 2){
             cell = topFrame.getCellAt(mouseX - WIDTH / 2, mouseY);

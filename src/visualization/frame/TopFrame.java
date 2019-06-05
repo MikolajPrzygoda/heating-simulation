@@ -79,6 +79,13 @@ public class TopFrame extends Frame {
 
     @Override
     public Cell getCellAt(int u, int v) {
+        if(u > padding && u < width - padding && v > padding && v < height - padding){
+            int z = nPages - 1 - (int) ((v - padding) / plotPixelHeight);
+            int y = currentDepth;
+            int x = (int) ((u - padding) / plotPixelWidth);
+
+            return simulation.getCell(z, y, x);
+        }
         return null;
     }
 }
