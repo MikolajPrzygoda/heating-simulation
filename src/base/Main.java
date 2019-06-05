@@ -63,7 +63,7 @@ public class Main extends PApplet{
         }
 
         //FPS counter
-        surface.setTitle(String.valueOf(frameRate));
+        surface.setTitle("FPS: " + String.valueOf(frameRate).substring(0, 4));
 
         //Update elapsedTime label
         ((Textlabel) guiController.getController("elapsedTime")).setText(
