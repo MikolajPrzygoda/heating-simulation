@@ -59,6 +59,9 @@ public class RoomPlan {
         }
     }
 
+    public int getWallThickness(){
+        return wallThickness;
+    }
 
     public static class Factory {
         private RoomPlan instance;
