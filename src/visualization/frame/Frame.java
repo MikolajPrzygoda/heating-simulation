@@ -127,8 +127,8 @@ public abstract class Frame {
         String minString = (simulation.getMinValue() + "").substring(0, 4);
         String maxString = (simulation.getMaxValue() + "").substring(0, 4);
 
-        canvas.text(minString, padding * 0.5f - 1, padding * 1.5f);
-        canvas.text(maxString, padding * 0.5f - 1, plotHeight + padding * 0.5f + 4);
+        canvas.text(minString, padding * 0.5f - 1, plotHeight + padding * 0.5f + 4);
+        canvas.text(maxString, padding * 0.5f - 1, padding * 1.5f);
 
         canvas.textSize(12);
 
@@ -137,7 +137,7 @@ public abstract class Frame {
         for (int i = 2 * padding; i < plotHeight; i++) {
             canvas.noStroke();
             canvas.fill(IronbowPalette.getColor(i, 2 * padding, plotHeight));
-            canvas.rect(padding / 2 - colorScaleWidth / 2, i, colorScaleWidth, 1);
+            canvas.rect(padding / 2 - colorScaleWidth / 2, height - i, colorScaleWidth, 1);
         }
     }
 
